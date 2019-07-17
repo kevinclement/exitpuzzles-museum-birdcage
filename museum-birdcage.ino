@@ -14,8 +14,7 @@ void setup() {
   digitalWrite (LED_PIN, LOW);
 }
 
-void loop() {
-  
+void checkButtons() {
   // note: looks like 32 and 33 are switched physically.  32 will read from 33 pin, and vice versa
   for(int i=0; i<5; i++) {
     int v = touchRead(touch_ports[i]);
@@ -52,4 +51,9 @@ void loop() {
       }
     }
   }
+}
+
+void loop() {
+  checkButtons();
+  
 }
