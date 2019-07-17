@@ -10,6 +10,9 @@ bool touch_rising_reported[5]     = { 0, 0, 0, 0, 0 };
 unsigned long touch_first_seen[5] = { 0, 0, 0, 0, 0 };
 int touch_current_pass_index = 0;
 
+bool SOLVED = false;
+bool ENABLED = true;
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Museum Birdcage by kevinc...");
@@ -59,7 +62,7 @@ int checkButtons() {
   return button_pressed + 1;
 }
 
-bool checkPassword() {
+bool isPasswordCorrect() {
   for(int i=0; i<6; i++) {
     if (touch_currently_typed[i] != touch_password[i]) {
       return false;
@@ -69,23 +72,34 @@ bool checkPassword() {
   return true;
 }
 
+void checkPassword(int buttonPressed) {
+  Serial.printf("%d pressed\n", buttonPressed);
+  touch_currently_typed[touch_current_pass_index] = buttonPressed;
+    
+  if (touch_current_pass_index == 5) {
+    Serial.printf("checking final password...\n");
+    if (isPasswordCorrect()) {
+      Serial.printf("SOLVED!!!\n");
+      SOLVED = true;
+    } else {
+        // now reset the current password stuff
+      touch_current_pass_index = 0;
+      touch_currently_typed[0] = touch_currently_typed[1] = touch_currently_typed[2] = touch_currently_typed[3] = touch_currently_typed[4] = touch_currently_typed[5] = 0;
+    }
+  } else {
+    touch_current_pass_index++;  
+  }
+}
+
 void loop() {
+  
+  // NOOP if we've solved it
+  if (SOLVED) {
+    return;  
+  }
+  
   int buttonPressed = checkButtons();
   if (buttonPressed != 0) {
-    Serial.printf("%d pressed\n", buttonPressed);
-    touch_currently_typed[touch_current_pass_index] = buttonPressed;
-    
-    if (touch_current_pass_index == 5) {
-      Serial.printf("checking final password...\n");
-      if (checkPassword()) {
-        Serial.printf("SOLVED!!!\n");
-      } else {
-        // now reset the current password stuff
-        touch_current_pass_index = 0;
-        touch_currently_typed[0] = touch_currently_typed[1] = touch_currently_typed[2] = touch_currently_typed[3] = touch_currently_typed[4] = touch_currently_typed[5] = 0;
-      }
-    } else {
-      touch_current_pass_index++;  
-    }
+    checkPassword(buttonPressed);
   }
 }
