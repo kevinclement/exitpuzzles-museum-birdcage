@@ -1,6 +1,25 @@
+#include "A4988.h"
+
+#define MOTOR_STEPS 200
+#define RPM 200
+#define MICROSTEPS 1
+#define DIR 18
+#define STEP 19
+#define MS1 22
+#define MS2 21
+#define MS3 4
+
 #define LED_PIN 2
 #define BUTTON_THRESH 30
 #define BUTTON_DELAY 50
+
+#define CMD_SEL_DEV 0X09
+#define DEV_TF 0X02
+#define CMD_PLAY_W_VOL 0X22
+#define CMD_PLAY 0X0D
+#define CMD_PAUSE 0X0E
+#define CMD_PREVIOUS 0X02
+#define CMD_NEXT 0X01
 
 int touch_password[6]             = { 5, 4, 2, 4, 1, 3 };
 int touch_currently_typed[6]      = { 0, 0, 0, 0, 0, 0 };
@@ -11,13 +30,25 @@ unsigned long touch_first_seen[5] = { 0, 0, 0, 0, 0 };
 int touch_current_pass_index = 0;
 
 bool SOLVED = false;
+bool TRAY_OUT = false;
 bool ENABLED = true;
+
+A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
+
+HardwareSerial Serial1(1);
+static int8_t Send_buf[8] = {0};
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Museum Birdcage by kevinc...");
+  Serial1.begin(9600, SERIAL_8N1, 16, 17);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite (LED_PIN, LOW);
+  stepper.begin(RPM, 16);
+  
+  delay(500);//Wait chip initialization is complete
+  sendCommand(CMD_SEL_DEV, DEV_TF);//select the TF card  
+  delay(200);//wait for 200ms
 }
 
 int checkButtons() {
@@ -77,29 +108,73 @@ void checkPassword(int buttonPressed) {
   touch_currently_typed[touch_current_pass_index] = buttonPressed;
     
   if (touch_current_pass_index == 5) {
-    Serial.printf("checking final password...\n");
+    Serial.printf("checking final password...");
     if (isPasswordCorrect()) {
       Serial.printf("SOLVED!!!\n");
       SOLVED = true;
     } else {
-        // now reset the current password stuff
+      Serial.printf("incorrect.\n");
       touch_current_pass_index = 0;
-      touch_currently_typed[0] = touch_currently_typed[1] = touch_currently_typed[2] = touch_currently_typed[3] = touch_currently_typed[4] = touch_currently_typed[5] = 0;
+      memset(touch_currently_typed, 0, sizeof(touch_currently_typed));
     }
   } else {
     touch_current_pass_index++;  
   }
 }
 
+void sendCommand(int8_t command, int16_t dat)
+{
+  delay(20);
+  Send_buf[0] = 0x7e; //starting byte
+  Send_buf[1] = 0xff; //version
+  Send_buf[2] = 0x06; //the number of bytes of the command without starting byte and ending byte
+  Send_buf[3] = command; //
+  Send_buf[4] = 0x00;//0x00 = no feedback, 0x01 = feedback
+  Send_buf[5] = (int8_t)(dat >> 8);//datah
+  Send_buf[6] = (int8_t)(dat); //datal
+  Send_buf[7] = 0xef; //ending byte
+  for(uint8_t i=0; i<8; i++)//
+  {
+    Serial1.write(Send_buf[i]) ;
+  }
+}
+
+void playTrack(int8_t track)
+{
+  delay(20);
+  Send_buf[0] = 0x7e; //starting byte
+  Send_buf[1] = 0xff; //version
+  Send_buf[2] = 0x06; //the number of bytes of the command without starting byte and ending byte
+  Send_buf[3] = CMD_PLAY_W_VOL; //
+  Send_buf[4] = 0x00;//0x00 = no feedback, 0x01 = feedback
+  Send_buf[5] = 0x1E;//(int8_t)(dat >> 8);//datah
+  Send_buf[6] = track; //datal
+  Send_buf[7] = 0xef; //ending byte
+  for(uint8_t i=0; i<8; i++)//
+  {
+    Serial1.write(Send_buf[i]) ;
+  }
+}
+
+
 void loop() {
   
   // NOOP if we've solved it
   if (SOLVED) {
-    return;  
+
+    if (!TRAY_OUT) {
+      stepper.rotate(400);
+      delay(2000);
+      stepper.rotate(-400);
+      TRAY_OUT = true;
+    }
+    
+    return;
   }
   
   int buttonPressed = checkButtons();
-  if (buttonPressed != 0) {
+  if (buttonPressed != 0) {    
+    playTrack(buttonPressed);  
     checkPassword(buttonPressed);
   }
 }
