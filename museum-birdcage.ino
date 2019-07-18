@@ -38,6 +38,10 @@ A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
 HardwareSerial Serial1(1);
 static int8_t Send_buf[8] = {0};
 
+// winning track: 6
+// full song: 7
+// failed track: 8
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Museum Birdcage by kevinc...");
@@ -108,11 +112,16 @@ void checkPassword(int buttonPressed) {
   touch_currently_typed[touch_current_pass_index] = buttonPressed;
     
   if (touch_current_pass_index == 5) {
+    // TODO: wait here so previous clip can play
+    //   should we make this wait for proper time based on clip pressed?
+    delay(1000);
+    
     Serial.printf("checking final password...");
     if (isPasswordCorrect()) {
       Serial.printf("SOLVED!!!\n");
       SOLVED = true;
     } else {
+      playTrack(8, false);
       Serial.printf("incorrect.\n");
       touch_current_pass_index = 0;
       memset(touch_currently_typed, 0, sizeof(touch_currently_typed));
@@ -139,7 +148,7 @@ void sendCommand(int8_t command, int16_t dat)
   }
 }
 
-void playTrack(int8_t track)
+void playTrack(int8_t track, bool loud)
 {
   delay(20);
   Send_buf[0] = 0x7e; //starting byte
@@ -147,12 +156,12 @@ void playTrack(int8_t track)
   Send_buf[2] = 0x06; //the number of bytes of the command without starting byte and ending byte
   Send_buf[3] = CMD_PLAY_W_VOL; //
   Send_buf[4] = 0x00;//0x00 = no feedback, 0x01 = feedback
-  Send_buf[5] = 0x1E;//(int8_t)(dat >> 8);//datah
-  Send_buf[6] = track; //datal
+  Send_buf[5] = loud ? 0x3C : 0x16; // loud=60%, soft=22%
+  Send_buf[6] = track; 
   Send_buf[7] = 0xef; //ending byte
   for(uint8_t i=0; i<8; i++)//
   {
-    Serial1.write(Send_buf[i]) ;
+    Serial1.write(Send_buf[i]);
   }
 }
 
@@ -163,6 +172,7 @@ void loop() {
   if (SOLVED) {
 
     if (!TRAY_OUT) {
+      playTrack(6, false);
       stepper.rotate(400);
       delay(2000);
       stepper.rotate(-400);
@@ -174,7 +184,7 @@ void loop() {
   
   int buttonPressed = checkButtons();
   if (buttonPressed != 0) {    
-    playTrack(buttonPressed);  
+    playTrack(buttonPressed, true);
     checkPassword(buttonPressed);
   }
 }
