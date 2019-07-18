@@ -1,7 +1,8 @@
 #include "A4988.h"
 
 #define MOTOR_STEPS 200
-#define RPM 200
+#define MOTOR_TRAVEL 3200
+#define RPM 400
 #define MICROSTEPS 1
 #define DIR 18
 #define STEP 19
@@ -9,7 +10,6 @@
 #define MS2 21
 #define MS3 4
 
-#define LED_PIN 2
 #define BUTTON_THRESH 30
 #define BUTTON_DELAY 50
 
@@ -30,6 +30,7 @@ int touch_current_pass_index = 0;
 int track_lengths_ms[8] = { 600,1500,1800,450,3850,24200,1100,4200 };
 
 bool SOLVED = false;
+unsigned long solved_at = 0;
 bool TRAY_OUT = false;
 bool ENABLED = true;
 
@@ -42,8 +43,8 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Museum Birdcage by kevinc...");
   Serial1.begin(9600, SERIAL_8N1, 16, 17);
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite (LED_PIN, LOW);
+
+  stepper.setSpeedProfile(BasicStepperDriver::LINEAR_SPEED);
   stepper.begin(RPM, 16);
   
   delay(500);//Wait chip initialization is complete
@@ -115,11 +116,11 @@ void checkPassword(int buttonPressed) {
     if (isPasswordCorrect()) {
       Serial.printf("SOLVED!!!\n");
       SOLVED = true;
+      solved_at = millis();
     } else {
       playTrack(TRACK_FAILED, false);
       Serial.printf("incorrect.\n");
-      touch_current_pass_index = 0;
-      memset(touch_currently_typed, 0, sizeof(touch_currently_typed));
+      reset();
     }
   } else {
     touch_current_pass_index++;  
@@ -163,6 +164,18 @@ void playTrack(int8_t track, bool loud)
   }
 }
 
+void reset() {
+  solved_at = 0;
+  SOLVED = false;
+  touch_current_pass_index = 0;
+  TRAY_OUT = false;
+  ENABLED = true;
+
+  memset(touch_currently_typed, 0, sizeof(touch_currently_typed));
+  memset(touch_last_seen, 0, sizeof(touch_last_seen));
+  memset(touch_first_seen, 0, sizeof(touch_first_seen));
+  memset(touch_rising_reported, 0, sizeof(touch_rising_reported));
+}
 
 void loop() {
   
@@ -171,9 +184,9 @@ void loop() {
 
     if (!TRAY_OUT) {
       playTrack(TRACK_WINNING, false);
-      stepper.rotate(400);
+      stepper.rotate(MOTOR_TRAVEL);
       delay(2000);
-      stepper.rotate(-400);
+      stepper.rotate(-MOTOR_TRAVEL);
       TRAY_OUT = true;
     }
     
