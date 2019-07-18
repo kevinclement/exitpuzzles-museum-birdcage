@@ -29,6 +29,11 @@ bool touch_rising_reported[5]     = { 0, 0, 0, 0, 0 };
 unsigned long touch_first_seen[5] = { 0, 0, 0, 0, 0 };
 int touch_current_pass_index = 0;
 
+#define TRACK_FULL 6
+#define TRACK_FAILED 7
+#define TRACK_WINNING 8
+int track_lengths_ms[8] = { 600,1500,1800,450,3850,24200,1100,4200 };
+
 bool SOLVED = false;
 bool TRAY_OUT = false;
 bool ENABLED = true;
@@ -38,9 +43,7 @@ A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
 HardwareSerial Serial1(1);
 static int8_t Send_buf[8] = {0};
 
-// winning track: 6
-// full song: 7
-// failed track: 8
+
 
 void setup() {
   Serial.begin(115200);
@@ -52,7 +55,7 @@ void setup() {
   
   delay(500);//Wait chip initialization is complete
   sendCommand(CMD_SEL_DEV, DEV_TF);//select the TF card  
-  delay(200);//wait for 200ms
+  delay(200);
 }
 
 int checkButtons() {
@@ -112,16 +115,15 @@ void checkPassword(int buttonPressed) {
   touch_currently_typed[touch_current_pass_index] = buttonPressed;
     
   if (touch_current_pass_index == 5) {
-    // TODO: wait here so previous clip can play
-    //   should we make this wait for proper time based on clip pressed?
-    delay(1000);
+    // wait here so previous clip can play
+    delay(track_lengths_ms[buttonPressed]);
     
     Serial.printf("checking final password...");
     if (isPasswordCorrect()) {
       Serial.printf("SOLVED!!!\n");
       SOLVED = true;
     } else {
-      playTrack(8, false);
+      playTrack(TRACK_FAILED, false);
       Serial.printf("incorrect.\n");
       touch_current_pass_index = 0;
       memset(touch_currently_typed, 0, sizeof(touch_currently_typed));
@@ -150,13 +152,16 @@ void sendCommand(int8_t command, int16_t dat)
 
 void playTrack(int8_t track, bool loud)
 {
+  // loud=60%, soft=22%
+  sendCommand(06, loud ? 0x3C : 0x16);
+  
   delay(20);
   Send_buf[0] = 0x7e; //starting byte
   Send_buf[1] = 0xff; //version
   Send_buf[2] = 0x06; //the number of bytes of the command without starting byte and ending byte
-  Send_buf[3] = CMD_PLAY_W_VOL; //
+  Send_buf[3] = 0x0F; //
   Send_buf[4] = 0x00;//0x00 = no feedback, 0x01 = feedback
-  Send_buf[5] = loud ? 0x3C : 0x16; // loud=60%, soft=22%
+  Send_buf[5] = 0x01;
   Send_buf[6] = track; 
   Send_buf[7] = 0xef; //ending byte
   for(uint8_t i=0; i<8; i++)//
@@ -172,7 +177,7 @@ void loop() {
   if (SOLVED) {
 
     if (!TRAY_OUT) {
-      playTrack(6, false);
+      playTrack(TRACK_WINNING, false);
       stepper.rotate(400);
       delay(2000);
       stepper.rotate(-400);
