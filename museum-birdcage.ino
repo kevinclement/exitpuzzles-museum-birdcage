@@ -12,6 +12,7 @@
 
 #define BUTTON_THRESH 30
 #define BUTTON_DELAY 50
+#define RESET_TIME 180000 // 3 minutes
 
 #define CMD_SEL_DEV 0X09
 #define DEV_TF 0X02
@@ -185,9 +186,11 @@ void loop() {
     if (!TRAY_OUT) {
       playTrack(TRACK_WINNING, false);
       stepper.rotate(MOTOR_TRAVEL);
-      delay(2000);
-      stepper.rotate(-MOTOR_TRAVEL);
       TRAY_OUT = true;
+    } else if (millis() - solved_at > RESET_TIME) {
+      Serial.printf("Resetting device...\n");
+      stepper.rotate(-MOTOR_TRAVEL);
+      reset();     
     }
     
     return;
