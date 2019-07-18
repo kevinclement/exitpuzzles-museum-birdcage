@@ -116,7 +116,7 @@ void checkPassword(int buttonPressed) {
     
   if (touch_current_pass_index == 5) {
     // wait here so previous clip can play
-    delay(track_lengths_ms[buttonPressed]);
+    delay(track_lengths_ms[buttonPressed-1] + 200);
     
     Serial.printf("checking final password...");
     if (isPasswordCorrect()) {
