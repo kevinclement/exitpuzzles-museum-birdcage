@@ -34,6 +34,8 @@ bool SOLVED = false;
 unsigned long solved_at = 0;
 bool TRAY_OUT = false;
 bool ENABLED = true;
+bool PLAYING_SONG = false;
+unsigned long playing_song_at = 0;
 
 A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
 
@@ -180,7 +182,6 @@ void reset() {
 
 void loop() {
   
-  // NOOP if we've solved it
   if (SOLVED) {
 
     if (!TRAY_OUT) {
@@ -190,10 +191,22 @@ void loop() {
     } else if (millis() - solved_at > RESET_TIME) {
       Serial.printf("Resetting device...\n");
       stepper.rotate(-MOTOR_TRAVEL);
-      reset();     
+      reset();
     }
-    
+
+    // NOOP the rest if we've solved it
     return;
+  }
+
+  if (!PLAYING_SONG) {
+    Serial.printf("playing song...\n");
+    PLAYING_SONG = true;
+    playing_song_at = millis();
+    playTrack(TRACK_FULL, true);    
+  } else if (millis() - playing_song_at > 25000) {
+    Serial.printf("done with song, starting again...\n");    
+    PLAYING_SONG = false;
+    playing_song_at = 0;
   }
   
   int buttonPressed = checkButtons();
