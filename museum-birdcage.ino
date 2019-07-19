@@ -11,6 +11,9 @@
 #define MS3 4
 #define MOTOR_ENABLE_PIN 5
 
+#define PR_PIN 0
+#define PR_DARK_THRESHOLD 3100
+
 #define BUTTON_THRESH 30
 #define BUTTON_DELAY 50
 #define RESET_TIME 180000 // 3 minutes
@@ -49,7 +52,8 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Museum Birdcage by kevinc...");
   Serial1.begin(9600, SERIAL_8N1, 16, 17);
-
+  
+  pinMode(PR_PIN, INPUT);
   pinMode(MOTOR_ENABLE_PIN, OUTPUT);
 
   stepper.setSpeedProfile(BasicStepperDriver::LINEAR_SPEED);
@@ -191,6 +195,10 @@ void loop() {
 
   // keep motor off to reduce wine, only turn it on before we are going to use it  
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
+
+  // check for light, only enable the device when its dark
+  int light_value = analogRead(PR_PIN);
+  ENABLED = light_value <= PR_DARK_THRESHOLD;
 
   // if its not enabled, then NOOP
   if (!ENABLED) {
