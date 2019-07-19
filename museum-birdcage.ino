@@ -14,6 +14,7 @@
 #define BUTTON_THRESH 30
 #define BUTTON_DELAY 50
 #define RESET_TIME 180000 // 3 minutes
+#define BUTTON_TIME_BETWEEN_SONG 4000 // time to wait before starting the song again
 
 #define CMD_SEL_DEV 0X09
 #define DEV_TF 0X02
@@ -25,6 +26,7 @@ unsigned long touch_last_seen[5]  = { 0, 0, 0, 0, 0 };
 bool touch_rising_reported[5]     = { 0, 0, 0, 0, 0 };
 unsigned long touch_first_seen[5] = { 0, 0, 0, 0, 0 };
 int touch_current_pass_index = 0;
+unsigned long last_button_press = 0;
 
 #define TRACK_FULL 6
 #define TRACK_FAILED 7
@@ -95,6 +97,7 @@ int checkButtons() {
 
   if (button_pressed >= 0) { 
     touch_rising_reported[button_pressed] = true;
+    last_button_press = millis();
   }
   
   return button_pressed + 1;
@@ -177,6 +180,7 @@ void reset() {
   TRAY_OUT = false;
   ENABLED = true;
 
+  last_button_press = 0;
   memset(touch_currently_typed, 0, sizeof(touch_currently_typed));
   memset(touch_last_seen, 0, sizeof(touch_last_seen));
   memset(touch_first_seen, 0, sizeof(touch_first_seen));
@@ -213,14 +217,27 @@ void loop() {
   }
 
   if (!PLAYING_SONG) {
-    Serial.printf("playing song...\n");
-    PLAYING_SONG = true;
-    playing_song_at = millis();
-    playTrack(TRACK_FULL, true);    
-  } else if (millis() - playing_song_at > 25000) {
-    Serial.printf("done with song, starting again...\n");    
-    PLAYING_SONG = false;
-    playing_song_at = 0;
+    if (last_button_press == 0 || millis() - last_button_press > BUTTON_TIME_BETWEEN_SONG) {
+      Serial.printf("playing song...\n");
+      PLAYING_SONG = true;
+      playing_song_at = millis();
+      playTrack(TRACK_FULL, true);
+    }
+  } else {
+
+    // if totally timed out, restart it
+    if (millis() - playing_song_at > 25000) {
+      Serial.printf("done with song, starting again...\n");    
+      PLAYING_SONG = false;
+      playing_song_at = 0;
+    }
+
+    // if there was a button press between our start time, then restart it
+    if (last_button_press > 0 && millis() - last_button_press > BUTTON_TIME_BETWEEN_SONG && last_button_press - playing_song_at < 25000) {
+      Serial.printf("restarting song from button press...\n");    
+      PLAYING_SONG = false;
+      playing_song_at = 0;
+    }
   }
   
   int buttonPressed = checkButtons();
