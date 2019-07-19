@@ -9,6 +9,7 @@
 #define MS1 22
 #define MS2 21
 #define MS3 4
+#define MOTOR_ENABLE_PIN 5
 
 #define BUTTON_THRESH 30
 #define BUTTON_DELAY 50
@@ -46,6 +47,8 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Museum Birdcage by kevinc...");
   Serial1.begin(9600, SERIAL_8N1, 16, 17);
+
+  pinMode(MOTOR_ENABLE_PIN, OUTPUT);
 
   stepper.setSpeedProfile(BasicStepperDriver::LINEAR_SPEED);
   stepper.begin(RPM, 16);
@@ -181,17 +184,28 @@ void reset() {
 }
 
 void loop() {
+
+  // keep motor off to reduce wine, only turn it on before we are going to use it  
+  digitalWrite(MOTOR_ENABLE_PIN, HIGH);
+
+  // if its not enabled, then NOOP
+  if (!ENABLED) {
+    return;
+  }
   
   if (SOLVED) {
-
     if (!TRAY_OUT) {
       playTrack(TRACK_WINNING, false);
+      digitalWrite(MOTOR_ENABLE_PIN, LOW);     
       stepper.rotate(MOTOR_TRAVEL);
+      digitalWrite(MOTOR_ENABLE_PIN, HIGH);
       TRAY_OUT = true;
     } else if (millis() - solved_at > RESET_TIME) {
-      Serial.printf("Resetting device...\n");
+      Serial.printf("Resetting tray...\n");
+      digitalWrite(MOTOR_ENABLE_PIN, LOW);
       stepper.rotate(-MOTOR_TRAVEL);
-      reset();
+      digitalWrite(MOTOR_ENABLE_PIN, HIGH);
+      ENABLED = false;
     }
 
     // NOOP the rest if we've solved it
