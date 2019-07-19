@@ -197,11 +197,17 @@ void loop() {
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
 
   // check for light, only enable the device when its dark
-  int light_value = analogRead(PR_PIN);
+  int light_value = analogRead(PR_PIN);  
   ENABLED = light_value <= PR_DARK_THRESHOLD;
 
   // if its not enabled, then NOOP
   if (!ENABLED) {
+    if (PLAYING_SONG) {
+      Serial.printf("Stopping song since its disabled\n");
+      sendCommand(0x16,0x00);
+      PLAYING_SONG = false;
+      playing_song_at = 0;
+    }
     return;
   }
   
