@@ -1,4 +1,8 @@
 #include "A4988.h"
+#include "AudioPlayer.h"
+#include "Stepper.h"
+#include "Notes.h"
+#include "LightSensor.h"
 
 #define MOTOR_STEPS 200
 #define MOTOR_TRAVEL 3200
@@ -45,7 +49,7 @@ unsigned long playing_song_at = 0;
 
 A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
 
-HardwareSerial Serial1(1);
+//HardwareSerial Serial1(1);
 static int8_t Send_buf[8] = {0};
 
 void setup() {
