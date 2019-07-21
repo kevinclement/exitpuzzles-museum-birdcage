@@ -5,8 +5,8 @@
 class Notes {
   public:
     Notes();
-    void Setup();
-    void Handle();
+    void setup();
+    void handle();
     
   private:
 

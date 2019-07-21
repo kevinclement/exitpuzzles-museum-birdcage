@@ -5,8 +5,8 @@
 class LightSensor {
   public:
     LightSensor();
-    void Setup();
-    void Handle();
+    void setup();
+    void handle();
     
   private:
 

@@ -4,8 +4,8 @@
 Notes::Notes() {
 }
 
-void Notes::Setup() {
+void Notes::setup() {
 }
 
-void Notes::Handle() {
+void Notes::handle() {
 }

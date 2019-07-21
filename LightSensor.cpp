@@ -4,8 +4,8 @@
 LightSensor::LightSensor() {
 }
 
-void LightSensor::Setup() {
+void LightSensor::setup() {
 }
 
-void LightSensor::Handle() {
+void LightSensor::handle() {
 }

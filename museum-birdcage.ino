@@ -49,6 +49,11 @@ unsigned long playing_song_at = 0;
 
 A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
 
+AudioPlayer player;
+LightSensor lightSensor;
+Notes notes;
+Stepper stepper2;
+
 //HardwareSerial Serial1(1);
 static int8_t Send_buf[8] = {0};
 
@@ -56,6 +61,11 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Museum Birdcage by kevinc...");
   Serial1.begin(9600, SERIAL_8N1, 16, 17);
+
+  player.setup();
+  lightSensor.setup();
+  notes.setup();
+  stepper2.setup();
   
   pinMode(PR_PIN, INPUT);
   pinMode(MOTOR_ENABLE_PIN, OUTPUT);

@@ -4,8 +4,8 @@
 AudioPlayer::AudioPlayer() {
 }
 
-void AudioPlayer::Setup() {
+void AudioPlayer::setup() {
 }
 
-void AudioPlayer::Handle() {
+void AudioPlayer::handle() {
 }

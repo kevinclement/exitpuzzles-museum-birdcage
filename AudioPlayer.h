@@ -5,8 +5,8 @@
 class AudioPlayer {
   public:
     AudioPlayer();
-    void Setup();
-    void Handle();
+    void setup();
+    void handle();
     
   private:
 

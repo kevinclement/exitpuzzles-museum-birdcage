@@ -4,8 +4,8 @@
 Stepper::Stepper() {
 }
 
-void Stepper::Setup() {
+void Stepper::setup() {
 }
 
-void Stepper::Handle() {
+void Stepper::handle() {
 }

@@ -5,8 +5,8 @@
 class Stepper {
   public:
     Stepper();
-    void Setup();
-    void Handle();
+    void setup();
+    void handle();
     
   private:
 
