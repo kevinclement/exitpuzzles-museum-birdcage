@@ -7,5 +7,5 @@ Notes::Notes() {
 void Notes::setup() {
 }
 
-void Notes::handle() {
+int Notes::handle() {
 }
