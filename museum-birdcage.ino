@@ -41,6 +41,7 @@ unsigned long last_button_press = 0;
 int track_lengths_ms[8] = { 600,1500,1800,450,3850,24200,1100,4200 };
 
 bool SOLVED = false;
+bool SOLVED_TRAY_IN = false;
 unsigned long solved_at = 0;
 bool TRAY_OUT = false;
 bool ENABLED = true;
@@ -194,6 +195,7 @@ void playTrack(int8_t track, bool loud)
 void reset() {
   solved_at = 0;
   SOLVED = false;
+  SOLVED_TRAY_IN = false;
   touch_current_pass_index = 0;
   TRAY_OUT = false;
   ENABLED = true;
@@ -232,12 +234,13 @@ void loop() {
       stepper.rotate(MOTOR_TRAVEL);
       digitalWrite(MOTOR_ENABLE_PIN, HIGH);
       TRAY_OUT = true;
-    } else if (millis() - solved_at > RESET_TIME) {
+    } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
       Serial.printf("Resetting tray...\n");
       digitalWrite(MOTOR_ENABLE_PIN, LOW);
       stepper.rotate(-MOTOR_TRAVEL);
       digitalWrite(MOTOR_ENABLE_PIN, HIGH);
       ENABLED = false;
+      SOLVED_TRAY_IN = true;
     }
 
     // NOOP the rest if we've solved it
