@@ -8,8 +8,11 @@ class Notes {
   public:
     Notes(Logic &logic);
     void setup();
-    int handle();
-    
+    void handle();
+
+    int checkButtons();
+    int checkPassword(int,int);
+
   private:
     Logic &_logic;
 };

@@ -55,9 +55,23 @@ void Logic::handle() {
   audio.handle();
 
   // check for light, only enable the device when its dark
-  if (lightsensor.lightDetected) {
-    Serial.println("LIGHT ON");
-  } else {
-    Serial.println("LIGHT OFF");
+  //if (lightsensor.lightDetected) {
+
+  
+  int buttonPressed = notes.checkButtons();
+  if (buttonPressed != 0) {
+    //playTrack(buttonPressed, true);
+
+    int res = notes.checkPassword(buttonPressed, audio.track_lengths_ms[buttonPressed-1]);
+    if (res > 0) {
+      if (res == 1) {
+        //      SOLVED = true;
+        //      solved_at = millis();
+      } else {
+        //playTrack(TRACK_FAILED, false);
+        //reset();
+      }
+    }
   }
+
 }
