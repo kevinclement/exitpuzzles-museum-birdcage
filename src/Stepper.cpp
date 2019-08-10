@@ -31,12 +31,14 @@ void Stepper::open() {
   digitalWrite(MOTOR_ENABLE_PIN, LOW);
   stepper.rotate(MOTOR_TRAVEL);
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
+  tray_out = true;
 }
 
 void Stepper::close() {
   digitalWrite(MOTOR_ENABLE_PIN, LOW);
   stepper.rotate(-MOTOR_TRAVEL);
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
+  tray_out = false;
 }
 
 void Stepper::handle() {

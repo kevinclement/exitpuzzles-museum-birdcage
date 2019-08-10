@@ -3,8 +3,14 @@
 #include "logic.h"
 #include "consts.h"
 
+#define RESET_TIME 180000      // 3 minutes
+
 int  FOO_VAR;                  // some foo desc
 int  FOO_VAR_ADDR = 0;         // where to store foo in eeprom
+
+bool SOLVED = false;
+bool SOLVED_TRAY_IN = false;
+unsigned long solved_at = 0;
 
 Logic::Logic() 
   : serial(*this),
@@ -54,6 +60,20 @@ void Logic::handle() {
   stepmotor.handle();
   audio.handle();
 
+  if (SOLVED) {
+    if (!stepmotor.tray_out) {
+      audio.play(audio.TRACK_WINNING, false);
+      stepmotor.open();
+    } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
+      Serial.printf("Resetting tray...\n");
+      stepmotor.close();
+      SOLVED_TRAY_IN = true;
+    }
+
+    // NOOP the rest if we've solved it
+    return;
+  }
+
   // check for light, only enable the device when its dark
   // if (lightsensor.lightDetected) {
   //   if (audio.playing) {
@@ -85,18 +105,16 @@ void Logic::handle() {
 
   int buttonPressed = notes.checkButtons();
   if (buttonPressed != 0) {
-    //playTrack(buttonPressed, true);
+    audio.play(buttonPressed, true);
 
     int res = notes.checkPassword(buttonPressed, audio.track_lengths_ms[buttonPressed-1]);
     if (res > 0) {
       if (res == 1) {
-        //      SOLVED = true;
-        //      solved_at = millis();
+        SOLVED = true;
+        solved_at = millis();
       } else {
-        //playTrack(TRACK_FAILED, false);
-        //reset();
+        audio.play(audio.TRACK_FAILED, false);
       }
     }
   }
-
 }

@@ -12,7 +12,9 @@ class Stepper {
 
     void open();
     void close();
-
+    
+    bool tray_out = false;
   private:
     Logic &_logic;
+    
 };
