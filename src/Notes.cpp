@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "Notes.h"
 
-#define BUTTON_THRESH 30
+#define BUTTON_THRESH 25
 #define BUTTON_DELAY 50
 #define BUTTON_TIME_BETWEEN_SONG 4000 // time to wait before starting the song again
 
@@ -48,7 +48,7 @@ int Notes::checkButtons() {
       if (touch_last_seen[i] != 0) {
         // rising edge
         if (millis() - touch_last_seen[i] > BUTTON_DELAY && !touch_rising_reported[i]) {
-          //Serial.printf("%d rising edge\n", i+1);          
+          //Serial.printf("%d rising edge\n", i+1);
           button_pressed = i;
         }
       } else {
@@ -106,6 +106,16 @@ int Notes::checkPassword(int buttonPressed, int d) {
   return res;
 }
 
+void debugButtons() {
+  int one = touchRead(touch_ports[0]);
+  int two = touchRead(touch_ports[1]);
+  int three = touchRead(touch_ports[2]);
+  int four = touchRead(touch_ports[3]);
+  int five = touchRead(touch_ports[4]);
+
+  Serial.printf("1:%d 2:%d 3:%d 4:%d 5:%d\n", one, two, three, four, five);
+}
 
 void Notes::handle() {
+  //debugButtons();
 }

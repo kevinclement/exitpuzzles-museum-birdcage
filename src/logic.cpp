@@ -55,13 +55,13 @@ void Logic::handle() {
   audio.handle();
 
   // check for light, only enable the device when its dark
-  if (lightsensor.lightDetected) {
-    if (audio.playing) {
-      Serial.printf("Stopping song since its disabled\n");
-      audio.stop();
-    }
-    return;
-  }
+  // if (lightsensor.lightDetected) {
+  //   if (audio.playing) {
+  //     Serial.printf("Stopping song since its disabled\n");
+  //     audio.stop();
+  //   }
+  //   return;
+  // }
 
   int buttonPressed = notes.checkButtons();
   if (buttonPressed != 0) {
