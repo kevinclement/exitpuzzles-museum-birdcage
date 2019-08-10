@@ -5,6 +5,8 @@
 #define BUTTON_DELAY 50
 #define BUTTON_TIME_BETWEEN_SONG 4000 // time to wait before starting the song again
 
+// Starting @ pin 12
+//   Purple, Blue, Gray, Green, <BLANK>, Orange
 int touch_ports[5]                = { 12, 15, 14, 27, 32 };
 int touch_password[6]             = { 5, 4, 2, 4, 1, 3 };
 int touch_currently_typed[6]      = { 0, 0, 0, 0, 0, 0 };
