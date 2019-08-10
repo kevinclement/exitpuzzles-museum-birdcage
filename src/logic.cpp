@@ -46,11 +46,13 @@ void Logic::printVariables() {
 }
 
 void Logic::open() {
-  stepmotor.open();
+  SOLVED = true;
+  solved_at = millis();
 }
 
 void Logic::close() {
   stepmotor.close();
+  SOLVED_TRAY_IN = true;
 }
 
 void Logic::handle() {
@@ -61,7 +63,7 @@ void Logic::handle() {
   audio.handle();
 
   if (SOLVED) {
-    if (!stepmotor.tray_out) {
+    if (!stepmotor.tray_out && !SOLVED_TRAY_IN)  {
       audio.play(audio.TRACK_WINNING, false);
       stepmotor.open();
     } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
