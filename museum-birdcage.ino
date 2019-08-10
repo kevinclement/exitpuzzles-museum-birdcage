@@ -8,15 +8,15 @@
 #define MOTOR_TRAVEL 3200
 #define RPM 400
 #define MICROSTEPS 1
-#define DIR 18
-#define STEP 19
-#define MS1 22
-#define MS2 21
-#define MS3 4
-#define MOTOR_ENABLE_PIN 5
+#define DIR 5
+#define STEP 18
+#define MS1 21
+#define MS2 19
+#define MS3 25
+#define MOTOR_ENABLE_PIN 4
 
-#define PR_PIN 0
-#define PR_DARK_THRESHOLD 3100
+#define PR_PIN 36
+#define PR_DARK_THRESHOLD 100
 
 #define BUTTON_THRESH 30
 #define BUTTON_DELAY 50
@@ -28,7 +28,7 @@
 
 int touch_password[6]             = { 5, 4, 2, 4, 1, 3 };
 int touch_currently_typed[6]      = { 0, 0, 0, 0, 0, 0 };
-int touch_ports[5]                = { 33, 32, 27, 14, 12 };
+int touch_ports[5]                = { 12, 15, 14, 27, 32 };
 unsigned long touch_last_seen[5]  = { 0, 0, 0, 0, 0 };
 bool touch_rising_reported[5]     = { 0, 0, 0, 0, 0 };
 unsigned long touch_first_seen[5] = { 0, 0, 0, 0, 0 };
@@ -215,6 +215,7 @@ void loop() {
   // check for light, only enable the device when its dark
   int light_value = analogRead(PR_PIN);  
   ENABLED = light_value <= PR_DARK_THRESHOLD;
+  //Serial.printf("light: %d\n", light_value);
 
   // if its not enabled, then NOOP
   if (!ENABLED) {
