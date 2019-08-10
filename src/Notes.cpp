@@ -106,6 +106,14 @@ int Notes::checkPassword(int buttonPressed, int d) {
   return res;
 }
 
+bool Notes::waitedLongEnough() {
+    return last_button_press == 0 || millis() - last_button_press > BUTTON_TIME_BETWEEN_SONG;
+}
+
+bool Notes::buttonPressedDuringSong(unsigned long played_at) {
+    return last_button_press > 0 && millis() - last_button_press > BUTTON_TIME_BETWEEN_SONG && last_button_press - played_at < 25000;
+}
+
 void debugButtons() {
   int one = touchRead(touch_ports[0]);
   int two = touchRead(touch_ports[1]);

@@ -4,12 +4,6 @@
 #define CMD_SEL_DEV 0X09
 #define DEV_TF 0X02
 
-#define TRACK_FULL 6
-#define TRACK_FAILED 7
-#define TRACK_WINNING 8
-
-unsigned long playing_song_at = 0;
-
 static int8_t Send_buf[8] = {0};
 
 void sendCommand(int8_t command, int16_t dat);
@@ -45,6 +39,9 @@ void sendCommand(int8_t command, int16_t dat)
 
 void AudioPlayer::play(int8_t track, bool loud)
 {
+  playing = true;
+  playing_song_at = millis();
+
   // loud=60%, soft=22%
   sendCommand(06, loud ? 0x3C : 0x16);
   
@@ -67,6 +64,10 @@ void AudioPlayer::stop() {
   sendCommand(0x16,0x00);
   playing = false;
   playing_song_at = 0;
+}
+
+bool AudioPlayer::finished() {
+  return millis() - playing_song_at > 25000;
 }
 
 void AudioPlayer::handle() {

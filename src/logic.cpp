@@ -63,6 +63,26 @@ void Logic::handle() {
   //   return;
   // }
 
+  if (!audio.playing) {
+    if (notes.waitedLongEnough()) {
+      Serial.printf("playing song...\n");
+      audio.play(audio.TRACK_FULL, true);
+    }
+  } else {
+
+    // if totally timed out, restart it
+    if (audio.finished()) {
+      Serial.printf("done with song, starting again...\n");
+      audio.stop();
+    }
+
+    // if there was a button press between our start time, then restart it
+    if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
+      Serial.printf("restarting song from button press...\n");
+      audio.stop();
+    }
+  }
+
   int buttonPressed = notes.checkButtons();
   if (buttonPressed != 0) {
     //playTrack(buttonPressed, true);

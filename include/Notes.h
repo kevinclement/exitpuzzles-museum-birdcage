@@ -12,6 +12,8 @@ class Notes {
 
     int checkButtons();
     int checkPassword(int,int);
+    bool waitedLongEnough();
+    bool buttonPressedDuringSong(unsigned long);
 
   private:
     Logic &_logic;

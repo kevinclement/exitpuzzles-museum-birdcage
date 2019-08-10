@@ -36,27 +36,5 @@ void loop() {
     return;
   }
 
-  if (!PLAYING_SONG) {
-    if (last_button_press == 0 || millis() - last_button_press > BUTTON_TIME_BETWEEN_SONG) {
-      Serial.printf("playing song...\n");
-      PLAYING_SONG = true;
-      playing_song_at = millis();
-      playTrack(TRACK_FULL, true);
-    }
-  } else {
-
-    // if totally timed out, restart it
-    if (millis() - playing_song_at > 25000) {
-      Serial.printf("done with song, starting again...\n");    
-      PLAYING_SONG = false;
-      playing_song_at = 0;
-    }
-
-    // if there was a button press between our start time, then restart it
-    if (last_button_press > 0 && millis() - last_button_press > BUTTON_TIME_BETWEEN_SONG && last_button_press - playing_song_at < 25000) {
-      Serial.printf("restarting song from button press...\n");    
-      PLAYING_SONG = false;
-      playing_song_at = 0;
-    }
-  }
+  
 }
