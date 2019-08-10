@@ -2,12 +2,14 @@
 
 #include "Arduino.h"
 
+class Logic;
+
 class Notes {
   public:
-    Notes();
+    Notes(Logic &logic);
     void setup();
     int handle();
     
   private:
-
+    Logic &_logic;
 };

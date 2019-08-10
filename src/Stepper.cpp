@@ -1,7 +1,9 @@
 #include "Arduino.h"
 #include "Stepper.h"
 
-Stepper::Stepper() {
+Stepper::Stepper(Logic &logic)
+: _logic(logic)
+{  
 }
 
 void Stepper::setup() {

@@ -1,7 +1,9 @@
 #include "Arduino.h"
 #include "Notes.h"
 
-Notes::Notes() {
+Notes::Notes(Logic &logic)
+: _logic(logic)
+{  
 }
 
 void Notes::setup() {

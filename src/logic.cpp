@@ -7,7 +7,11 @@ int  FOO_VAR;                  // some foo desc
 int  FOO_VAR_ADDR = 0;         // where to store foo in eeprom
 
 Logic::Logic() 
-  : serial(*this)
+  : serial(*this),
+    audio(*this),
+    stepmotor(*this),
+    notes(*this),
+    lightsensor(*this)
 {
 }
 

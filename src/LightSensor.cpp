@@ -1,7 +1,9 @@
 #include "Arduino.h"
 #include "LightSensor.h"
 
-LightSensor::LightSensor() {
+LightSensor::LightSensor(Logic &logic)
+: _logic(logic)
+{  
 }
 
 void LightSensor::setup() {

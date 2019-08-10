@@ -9,5 +9,5 @@ void setup() {
 }
 
 void loop() {
-    logic.handle();
+  logic.handle();
 }

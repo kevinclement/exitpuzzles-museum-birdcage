@@ -2,12 +2,15 @@
 
 #include "Arduino.h"
 
+class Logic;
+
 class AudioPlayer {
   public:
-    AudioPlayer();
+    AudioPlayer(Logic &logic);
     void setup();
     void handle();
     
   private:
+    Logic &_logic;
 
 };
