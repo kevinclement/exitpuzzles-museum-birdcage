@@ -12,8 +12,7 @@ SerialManager::SerialManager(Logic &logic)
 
 void SerialManager::setup() {
   Serial.begin(115200);
-
-  Serial.printf("Museum Laser Controller by kevinc...\n");
+  Serial.printf("Museum Birdcage by kevinc...\n");
 
   // set read timeout to something really low so we don't hang
   Serial.setTimeout(10);
@@ -21,7 +20,7 @@ void SerialManager::setup() {
   while (!Serial); // Wait untilSerial is ready 
 
   // Bluetooth device name
-  SerialBT.begin("FooBTName");
+  SerialBT.begin("ExitMuseumBirdcage");
 }
 
 void SerialManager::print(const char *fmt, ...) {
@@ -90,9 +89,13 @@ void SerialManager::handleMessage(String msg) {
     print("disabling device now...%s", CRLF);
     //ENABLED = false;
   }
-  else if (command == "drop") {
-    //FORCE_DROP = true;
-    print("dropping bottom now...%s", CRLF);
+  else if (command == "open") {
+    print("opening device now...%s", CRLF);
+    _logic.open();
+  }
+  else if (command == "close") {
+    print("closing device now...%s", CRLF);
+    _logic.close();
   }
   else if (command == "threshold") {
     print("setting threshold to '%d'...%s", value, CRLF);

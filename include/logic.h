@@ -18,6 +18,9 @@ public:
   void setup();
   void handle();
 
+  void open();
+  void close();
+
 private:
   void readStoredVariables();
   void printVariables();

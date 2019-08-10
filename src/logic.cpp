@@ -17,6 +17,10 @@ Logic::Logic()
 
 void Logic::setup() {
     serial.setup();
+    audio.setup();
+    lightsensor.setup();
+    notes.setup();
+    stepmotor.setup();
 
     readStoredVariables();
 
@@ -37,4 +41,12 @@ void Logic::printVariables() {
   serial.print(CRLF);
   serial.print("Current Variables:%s", CRLF);
   serial.print("  foo:  %d%s", FOO_VAR, CRLF);
+}
+
+void Logic::open() {
+  stepmotor.open();
+}
+
+void Logic::close() {
+  stepmotor.close();
 }
