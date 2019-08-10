@@ -9,9 +9,10 @@ class Stepper {
     Stepper(Logic &logic);
     void setup();
     void handle();
+
     void open();
     void close();
-    
+
   private:
     Logic &_logic;
 };

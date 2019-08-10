@@ -9,7 +9,9 @@ class LightSensor {
     LightSensor(Logic &logic);
     void setup();
     void handle();
-    
+
+    bool lightDetected = true;
+
   private:
     Logic &_logic;
 };

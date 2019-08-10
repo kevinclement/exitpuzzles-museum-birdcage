@@ -16,20 +16,16 @@ Logic::Logic()
 }
 
 void Logic::setup() {
-    serial.setup();
-    audio.setup();
-    lightsensor.setup();
-    notes.setup();
-    stepmotor.setup();
+  serial.setup();
+  audio.setup();
+  lightsensor.setup();
+  notes.setup();
+  stepmotor.setup();
 
-    readStoredVariables();
+  readStoredVariables();
 
-    serial.printHelp();
-    printVariables();
-}
-
-void Logic::handle() {
-    serial.handle();
+  serial.printHelp();
+  printVariables();
 }
 
 void Logic::readStoredVariables() {
@@ -49,4 +45,19 @@ void Logic::open() {
 
 void Logic::close() {
   stepmotor.close();
+}
+
+void Logic::handle() {
+  serial.handle();
+  lightsensor.handle();
+  notes.handle();
+  stepmotor.handle();
+  audio.handle();
+
+  // check for light, only enable the device when its dark
+  if (lightsensor.lightDetected) {
+    Serial.println("LIGHT ON");
+  } else {
+    Serial.println("LIGHT OFF");
+  }
 }

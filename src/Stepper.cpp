@@ -21,17 +21,25 @@ Stepper::Stepper(Logic &logic)
 }
 
 void Stepper::setup() {
+  pinMode(MOTOR_ENABLE_PIN, OUTPUT);
+
   stepper.setSpeedProfile(BasicStepperDriver::LINEAR_SPEED);
   stepper.begin(RPM, 16);
 }
 
 void Stepper::open() {
-    stepper.rotate(MOTOR_TRAVEL);
+  digitalWrite(MOTOR_ENABLE_PIN, LOW);
+  stepper.rotate(MOTOR_TRAVEL);
+  digitalWrite(MOTOR_ENABLE_PIN, HIGH);
 }
 
 void Stepper::close() {
-    stepper.rotate(-MOTOR_TRAVEL);
+  digitalWrite(MOTOR_ENABLE_PIN, LOW);
+  stepper.rotate(-MOTOR_TRAVEL);
+  digitalWrite(MOTOR_ENABLE_PIN, HIGH);
 }
 
 void Stepper::handle() {
+  // keep motor off to reduce wine, only turn it on before we are going to use it  
+  digitalWrite(MOTOR_ENABLE_PIN, HIGH);
 }
