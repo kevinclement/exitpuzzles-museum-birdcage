@@ -1,4 +1,4 @@
-#include "Arduino.h"
+  #include "Arduino.h"
 #include "consts.h"
 #include "Logic.h"
 #include "BluetoothSerial.h"
@@ -89,13 +89,21 @@ void SerialManager::handleMessage(String msg) {
     print("disabling device now...%s", CRLF);
     //ENABLED = false;
   }
-  else if (command == "open") {
+  else if (command == "open" || command == "o") {
     print("opening device now...%s", CRLF);
     _logic.open();
   }
-  else if (command == "close") {
+  else if (command == "close" || command == "c") {
     print("closing device now...%s", CRLF);
     _logic.close();
+  }
+  else if (command == "b") {
+    print("back now...%s", CRLF);
+    _logic.stepmotor.back();
+  }
+  else if (command == "f") {
+    print("back now...%s", CRLF);
+    _logic.stepmotor.forward();
   }
   else if (command == "threshold") {
     print("setting threshold to '%d'...%s", value, CRLF);
@@ -106,7 +114,7 @@ void SerialManager::handleMessage(String msg) {
   else if (command == "status") {
     //printVariables();
   }
-  else if (command == "reset") {
+  else if (command == "reset" || command == "r") {
     ESP.restart();
   } else {
     int str_len = command.length() + 1; 

@@ -12,6 +12,9 @@ class Stepper {
 
     void open();
     void close();
+
+    void back();
+    void forward();
     
     bool tray_out = false;
   private:

@@ -1,13 +1,13 @@
 #include "Arduino.h"
 #include "Notes.h"
 
-#define BUTTON_THRESH 25
 #define BUTTON_DELAY 50
 #define BUTTON_TIME_BETWEEN_SONG 4000 // time to wait before starting the song again
 
 // Starting @ pin 12
 //   Purple, Blue, Gray, Green, <BLANK>, Orange
-int touch_ports[5]                = { 12, 15, 14, 27, 32 };
+int touch_ports[5]                = { 14, 15, 32, 27, 12 };
+int touch_thresh[5]               = { 35, 25, 15, 30, 30 };
 int touch_password[6]             = { 5, 4, 2, 4, 1, 3 };
 int touch_currently_typed[6]      = { 0, 0, 0, 0, 0, 0 };
 unsigned long touch_last_seen[5]  = { 0, 0, 0, 0, 0 };
@@ -29,7 +29,14 @@ int Notes::checkButtons() {
   
   // note: looks like 32 and 33 are switched physically.  32 will read from 33 pin, and vice versa
   for(int i=0; i<5; i++) {
-    if (touchRead(touch_ports[i]) > BUTTON_THRESH) {
+    int curVal = touchRead(touch_ports[i]);
+    
+    // ignore 0 stutters
+    if (curVal == 0) {
+      continue;
+    }
+
+    if (curVal > touch_thresh[i]) {
 
       // check on rising edge if we've been touching it already
       if (touch_first_seen[i] != 0 && (millis() - touch_first_seen[i] > BUTTON_DELAY)) {

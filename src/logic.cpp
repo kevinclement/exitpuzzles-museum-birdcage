@@ -119,4 +119,6 @@ void Logic::handle() {
       }
     }
   }
+
+  delay(100);
 }

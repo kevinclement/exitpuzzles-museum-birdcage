@@ -3,7 +3,7 @@
 #include "A4988.h"
 
 #define MOTOR_STEPS 200
-#define MOTOR_TRAVEL 3200
+#define MOTOR_TRAVEL 3600
 #define RPM 400
 #define MICROSTEPS 1
 #define DIR 5
@@ -39,6 +39,18 @@ void Stepper::close() {
   stepper.rotate(-MOTOR_TRAVEL);
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
   tray_out = false;
+}
+
+void Stepper::back() {
+  digitalWrite(MOTOR_ENABLE_PIN, LOW);
+  stepper.rotate(-100);
+  digitalWrite(MOTOR_ENABLE_PIN, HIGH);
+}
+
+void Stepper::forward() {
+  digitalWrite(MOTOR_ENABLE_PIN, LOW);
+  stepper.rotate(100);
+  digitalWrite(MOTOR_ENABLE_PIN, HIGH);
 }
 
 void Stepper::handle() {
