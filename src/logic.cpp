@@ -110,7 +110,7 @@ void Logic::handle() {
     audio.play(buttonPressed, true);
 
     int res = notes.checkPassword(buttonPressed, audio.track_lengths_ms[buttonPressed-1]);
-    if (res > 0) {
+    if (res >= 0) {
       if (res == 1) {
         SOLVED = true;
         solved_at = millis();

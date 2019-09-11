@@ -102,7 +102,7 @@ void SerialManager::handleMessage(String msg) {
     _logic.stepmotor.back();
   }
   else if (command == "f") {
-    print("back now...%s", CRLF);
+    print("forward now...%s", CRLF);
     _logic.stepmotor.forward();
   }
   else if (command == "threshold") {
