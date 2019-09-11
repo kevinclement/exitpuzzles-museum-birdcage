@@ -2,7 +2,7 @@
 #include "Notes.h"
 
 #define BUTTON_DELAY 50
-#define BUTTON_TIME_BETWEEN_SONG 4000 // time to wait before starting the song again
+#define BUTTON_TIME_BETWEEN_SONG 1000 // time to wait before starting the song again
 
 // Starting @ pin 12
 //   Purple, Blue, Gray, Green, <BLANK>, Orange
