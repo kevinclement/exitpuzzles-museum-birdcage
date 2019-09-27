@@ -110,11 +110,6 @@ void Logic::handle() {
 void Logic::status() {
   char cMsg[254];
 
-  char pass[6];
-  for(int i=0; i<6; i++) {
-    pass[i] = notes.touch_currently_typed[i];
-  }
-
   sprintf(cMsg, 
     "status="
       "version:%s,"
@@ -124,7 +119,7 @@ void Logic::status() {
       "solved:%s,"
       "lightValue:%d,"
       "trayOpened:%s,"
-      "password:%s"
+      "password:%d%d%d%d%d%d"
 
       "%s"
     , GIT_HASH,
@@ -134,7 +129,12 @@ void Logic::status() {
       solved_at > 0 ? "true" : "false",
       lightsensor.light_value,
       stepmotor.tray_out ? "true" : "false",
-      pass,
+      notes.touch_currently_typed[0],
+      notes.touch_currently_typed[1],
+      notes.touch_currently_typed[2],
+      notes.touch_currently_typed[3],
+      notes.touch_currently_typed[4],
+      notes.touch_currently_typed[5],
 
       CRLF);
 
