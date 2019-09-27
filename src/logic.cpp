@@ -109,17 +109,33 @@ void Logic::handle() {
 
 void Logic::status() {
   char cMsg[254];
+
+  char pass[6];
+  for(int i=0; i<6; i++) {
+    pass[i] = notes.touch_currently_typed[i];
+  }
+
   sprintf(cMsg, 
     "status="
       "version:%s,"
       "gitDate:%s,"
       "buildDate:%s,"
-      "solved:%s"
+
+      "solved:%s,"
+      "lightValue:%d,"
+      "trayOpened:%s,"
+      "password:%s"
+
       "%s"
     , GIT_HASH,
       GIT_DATE,
       DATE_NOW,
+
       solved_at > 0 ? "true" : "false",
+      lightsensor.light_value,
+      stepmotor.tray_out ? "true" : "false",
+      pass,
+
       CRLF);
 
   serial.print(cMsg);

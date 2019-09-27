@@ -15,6 +15,10 @@ class Notes {
     bool waitedLongEnough();
     bool buttonPressedDuringSong(unsigned long);
 
+    int touch_currently_typed[6] = { 0, 0, 0, 0, 0, 0 };
+
   private:
     Logic &_logic;
+    
+    bool isPasswordCorrect();
 };

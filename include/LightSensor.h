@@ -11,6 +11,7 @@ class LightSensor {
     void handle();
 
     bool lightDetected = true;
+    int light_value = 0;
 
   private:
     Logic &_logic;

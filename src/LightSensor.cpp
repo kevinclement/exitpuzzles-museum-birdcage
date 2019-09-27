@@ -15,7 +15,7 @@ void LightSensor::setup() {
 
 void LightSensor::handle() {
 
-  int light_value = analogRead(PR_PIN);  
+  light_value = analogRead(PR_PIN);
   lightDetected = light_value > PR_DARK_THRESHOLD;
 
   //Serial.printf("light: %d\n", light_value);

@@ -9,7 +9,6 @@
 int touch_ports[5]                = { 14, 15, 32, 27, 12 };
 int touch_thresh[5]               = { 35, 25, 15, 30, 30 };
 int touch_password[6]             = { 5, 4, 2, 4, 1, 3 };
-int touch_currently_typed[6]      = { 0, 0, 0, 0, 0, 0 };
 unsigned long touch_last_seen[5]  = { 0, 0, 0, 0, 0 };
 bool touch_rising_reported[5]     = { 0, 0, 0, 0, 0 };
 unsigned long touch_first_seen[5] = { 0, 0, 0, 0, 0 };
@@ -74,7 +73,7 @@ int Notes::checkButtons() {
   return button_pressed + 1;
 }
 
-bool isPasswordCorrect() {
+bool Notes::isPasswordCorrect() {
   for(int i=0; i<6; i++) {
     if (touch_currently_typed[i] != touch_password[i]) {
       return false;
