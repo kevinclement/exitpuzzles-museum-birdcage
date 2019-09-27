@@ -18,11 +18,11 @@ public:
   void setup();
   void handle();
 
-  void open();
   void close();
+  void solved();
+  void status();
 
 private:
-  void readStoredVariables();
-  void printVariables();
+
 };
 

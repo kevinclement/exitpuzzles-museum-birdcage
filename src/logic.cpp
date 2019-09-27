@@ -5,15 +5,12 @@
 
 #define RESET_TIME 180000      // 3 minutes
 
-int  FOO_VAR;                  // some foo desc
-int  FOO_VAR_ADDR = 0;         // where to store foo in eeprom
-
 bool SOLVED = false;
 bool SOLVED_TRAY_IN = false;
 unsigned long solved_at = 0;
 
 Logic::Logic() 
-  : serial(*this),
+  : serial(),
     audio(*this),
     stepmotor(*this),
     notes(*this),
@@ -22,35 +19,25 @@ Logic::Logic()
 }
 
 void Logic::setup() {
-  serial.setup();
+  serial.setup("ExitMuseumBirdcage");
+
   audio.setup();
   lightsensor.setup();
   notes.setup();
   stepmotor.setup();
-
-  readStoredVariables();
-
-  serial.printHelp();
-  printVariables();
 }
 
-void Logic::readStoredVariables() {
-  EEPROM.begin(64); // don't need a big size
-  //EEPROM.get(FOO_VAR_ADDR, FOO_VAR);
-}
+void Logic::solved() {
+  serial.print("Solved!\n");
 
-void Logic::printVariables() { 
-  serial.print(CRLF);
-  serial.print("Current Variables:%s", CRLF);
-  serial.print("  foo:  %d%s", FOO_VAR, CRLF);
-}
-
-void Logic::open() {
   SOLVED = true;
   solved_at = millis();
+
+  status();
 }
 
 void Logic::close() {
+  Serial.printf("Resetting tray...\n");
   stepmotor.close();
   SOLVED_TRAY_IN = true;
 }
@@ -67,9 +54,7 @@ void Logic::handle() {
       audio.play(audio.TRACK_WINNING, false);
       stepmotor.open();
     } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
-      Serial.printf("Resetting tray...\n");
-      stepmotor.close();
-      SOLVED_TRAY_IN = true;
+      close();
     }
 
     // NOOP the rest if we've solved it
@@ -112,8 +97,7 @@ void Logic::handle() {
     int res = notes.checkPassword(buttonPressed, audio.track_lengths_ms[buttonPressed-1]);
     if (res >= 0) {
       if (res == 1) {
-        SOLVED = true;
-        solved_at = millis();
+        solved();
       } else {
         audio.play(audio.TRACK_FAILED, false);
       }
@@ -121,4 +105,22 @@ void Logic::handle() {
   }
 
   delay(100);
+}
+
+void Logic::status() {
+  char cMsg[254];
+  sprintf(cMsg, 
+    "status="
+      "version:%s,"
+      "gitDate:%s,"
+      "buildDate:%s,"
+      "solved:%s"
+      "%s"
+    , GIT_HASH,
+      GIT_DATE,
+      DATE_NOW,
+      solved_at > 0 ? "true" : "false",
+      CRLF);
+
+  serial.print(cMsg);
 }
