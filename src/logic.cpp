@@ -40,6 +40,7 @@ void Logic::close() {
   serial.print("Resetting tray...\n");
   stepmotor.close();
   SOLVED_TRAY_IN = true;
+  status();
 }
 
 void Logic::handle() {
@@ -102,6 +103,8 @@ void Logic::handle() {
         audio.play(audio.TRACK_FAILED, false);
       }
     }
+
+    status();
   }
 
   delay(100);
