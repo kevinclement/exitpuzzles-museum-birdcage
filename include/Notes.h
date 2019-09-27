@@ -21,4 +21,5 @@ class Notes {
     Logic &_logic;
     
     bool isPasswordCorrect();
+    void debugButtons();
 };

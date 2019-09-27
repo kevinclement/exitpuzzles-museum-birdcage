@@ -37,7 +37,7 @@ void Logic::solved() {
 }
 
 void Logic::close() {
-  Serial.printf("Resetting tray...\n");
+  serial.print("Resetting tray...\n");
   stepmotor.close();
   SOLVED_TRAY_IN = true;
 }
@@ -64,7 +64,7 @@ void Logic::handle() {
   // check for light, only enable the device when its dark
   // if (lightsensor.lightDetected) {
   //   if (audio.playing) {
-  //     Serial.printf("Stopping song since its disabled\n");
+  //     serial.print("Stopping song since its disabled\n");
   //     audio.stop();
   //   }
   //   return;
@@ -72,20 +72,20 @@ void Logic::handle() {
 
   if (!audio.playing) {
     if (notes.waitedLongEnough()) {
-      Serial.printf("playing song...\n");
+      serial.print("playing song...\n");
       audio.play(audio.TRACK_FULL, true);
     }
   } else {
 
     // if totally timed out, restart it
     if (audio.finished()) {
-      Serial.printf("done with song, starting again...\n");
+      serial.print("done with song, starting again...\n");
       audio.stop();
     }
 
     // if there was a button press between our start time, then restart it
     if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
-      Serial.printf("restarting song from button press...\n");
+      serial.print("restarting song from button press...\n");
       audio.stop();
     }
   }

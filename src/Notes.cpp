@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "Notes.h"
+#include "logic.h"
 
 #define BUTTON_DELAY 50
 #define BUTTON_TIME_BETWEEN_SONG 1000 // time to wait before starting the song again
@@ -39,7 +40,7 @@ int Notes::checkButtons() {
 
       // check on rising edge if we've been touching it already
       if (touch_first_seen[i] != 0 && (millis() - touch_first_seen[i] > BUTTON_DELAY)) {
-        //Serial.printf("%d falling edge\n", i+1);
+        //serial.print("%d falling edge\n", i+1);
       }
 
       // reset last seen
@@ -56,7 +57,7 @@ int Notes::checkButtons() {
       if (touch_last_seen[i] != 0) {
         // rising edge
         if (millis() - touch_last_seen[i] > BUTTON_DELAY && !touch_rising_reported[i]) {
-          //Serial.printf("%d rising edge\n", i+1);
+          //serial.print("%d rising edge\n", i+1);
           button_pressed = i;
         }
       } else {
@@ -85,19 +86,19 @@ bool Notes::isPasswordCorrect() {
 
 int Notes::checkPassword(int buttonPressed, int d) {
   int res = -1;
-  Serial.printf("%d pressed\n", buttonPressed);
+  _logic.serial.print("%d pressed\n", buttonPressed);
   touch_currently_typed[touch_current_pass_index] = buttonPressed;
 
   if (touch_current_pass_index == 5) {
     // wait here so previous clip can play
     delay(d + 200);
 
-    Serial.printf("checking final password...");
+    _logic.serial.print("checking final password...\n");
     if (isPasswordCorrect()) {
-      Serial.printf("SOLVED!!!\n");
+      _logic.serial.print("SOLVED!!!\n");
       res = 1;
     } else {
-      Serial.printf("incorrect.\n");
+      _logic.serial.print("incorrect.\n");
       res = 0;
     }
 
@@ -122,14 +123,14 @@ bool Notes::buttonPressedDuringSong(unsigned long played_at) {
     return last_button_press > 0 && millis() - last_button_press > BUTTON_TIME_BETWEEN_SONG && last_button_press - played_at < 25000;
 }
 
-void debugButtons() {
+void Notes::debugButtons() {
   int one = touchRead(touch_ports[0]);
   int two = touchRead(touch_ports[1]);
   int three = touchRead(touch_ports[2]);
   int four = touchRead(touch_ports[3]);
   int five = touchRead(touch_ports[4]);
 
-  Serial.printf("1:%d 2:%d 3:%d 4:%d 5:%d\n", one, two, three, four, five);
+  _logic.serial.print("1:%d 2:%d 3:%d 4:%d 5:%d\n", one, two, three, four, five);
 }
 
 void Notes::handle() {
