@@ -15,7 +15,7 @@ Logic::Logic()
     stepmotor(*this),
     notes(*this),
     lightsensor(*this),
-    wifi()
+    wifi(*this)
 {
 }
 

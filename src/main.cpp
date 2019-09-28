@@ -34,7 +34,7 @@ void back(int) {
   logic.stepmotor.back();
 }
 
-void setup() {
+void setup() {  
   logic.setup();
   logic.serial.print("Museum Birdcage by kevinc...\n");
   Serial.println(getFullVersion("museum-birdcage"));

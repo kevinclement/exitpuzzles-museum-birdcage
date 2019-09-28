@@ -1,17 +1,16 @@
 #pragma once
 
 #include "Arduino.h"
-#include <WiFi.h>
-#include <WifiUDP.h>
-#include <ArduinoOTA.h>
 
-class Wifi {
+class Logic;
+
+class WifiUpdate {
   public:
-    Wifi();
+    WifiUpdate(Logic &logic);
     void setup();
     void handle();
 
   private:
-    
+    Logic &_logic;
 };
 
