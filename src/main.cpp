@@ -24,15 +24,27 @@ void closeTray(int) {
   logic.close();
 }
 
+void forward(int) {
+  logic.serial.print("forward now...%s", CRLF);
+  logic.stepmotor.forward();
+}
+
+void back(int) {
+  logic.serial.print("back now...%s", CRLF);
+  logic.stepmotor.back();
+}
+
 void setup() {
   logic.setup();
   logic.serial.print("Museum Birdcage by kevinc...\n");
   Serial.println(getFullVersion("museum-birdcage"));
 
-  logic.serial.registerCommand(SerialCommand("status", 's', &status,    "status", "gets the status of device"));
-  logic.serial.registerCommand(SerialCommand("solve",  'v', &solve,     "solve",  "force a puzzle solve of the device"));
-  logic.serial.registerCommand(SerialCommand("close",  'c', &closeTray, "close",  "close the device tray"));
-  logic.serial.registerCommand(SerialCommand("reboot", 'r', &reboot,    "reboot", "software reboot the device"));
+  logic.serial.registerCommand(SerialCommand("status",  's', &status,    "status",   "gets the status of device"));
+  logic.serial.registerCommand(SerialCommand("solve",   'v', &solve,     "solve",   "force a puzzle solve of the device"));
+  logic.serial.registerCommand(SerialCommand("close",   'c', &closeTray, "close",   "close the device tray"));
+  logic.serial.registerCommand(SerialCommand("forward", 'f', &forward,   "forward", "move the tray forward a small amount"));
+  logic.serial.registerCommand(SerialCommand("back",    'b', &back,      "back",    "move the tray backward a small amount"));
+  logic.serial.registerCommand(SerialCommand("reboot",  'r', &reboot,    "reboot",  "software reboot the device"));
 
   logic.serial.printHelp();
   logic.status();
@@ -41,27 +53,3 @@ void setup() {
 void loop() {
   logic.handle();
 }
-
-  // else if (command == "open" || command == "o") {
-  //   print("opening device now...%s", CRLF);
-  //   _logic.open();
-  
-  // else if (command == "close" || command == "c") {
-  //   print("closing device now...%s", CRLF);
-  //   _logic.close();
-  
-  // else if (command == "b") {
-  //   print("back now...%s", CRLF);
-  //   _logic.stepmotor.back();
-  
-  // else if (command == "f") {
-  //   print("forward now...%s", CRLF);
-  //   _logic.stepmotor.forward();
-  
-  
-  // else if (command == "status") {
-  //   //printVariables();
-  
-  // else if (command == "reset" || command == "r") {
-  //   ESP.restart();
-  
