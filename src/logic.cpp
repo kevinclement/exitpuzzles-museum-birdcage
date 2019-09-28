@@ -14,7 +14,8 @@ Logic::Logic()
     audio(*this),
     stepmotor(*this),
     notes(*this),
-    lightsensor(*this)
+    lightsensor(*this),
+    wifi()
 {
 }
 
@@ -25,6 +26,7 @@ void Logic::setup() {
   lightsensor.setup();
   notes.setup();
   stepmotor.setup();
+  wifi.setup();
 }
 
 void Logic::solved() {
@@ -45,6 +47,7 @@ void Logic::close() {
 
 void Logic::handle() {
   serial.handle();
+  wifi.handle();
   lightsensor.handle();
   notes.handle();
   stepmotor.handle();
