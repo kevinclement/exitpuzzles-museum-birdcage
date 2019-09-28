@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "Stepper.h"
 #include "A4988.h"
+#include "logic.h"
 
 #define MOTOR_STEPS 200
 #define MOTOR_TRAVEL 3600
@@ -32,6 +33,7 @@ void Stepper::open() {
   stepper.rotate(MOTOR_TRAVEL);
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
   tray_out = true;
+  _logic.status();
 }
 
 void Stepper::close() {
@@ -39,6 +41,7 @@ void Stepper::close() {
   stepper.rotate(-MOTOR_TRAVEL);
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
   tray_out = false;
+  _logic.status();
 }
 
 void Stepper::back() {
