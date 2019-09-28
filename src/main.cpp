@@ -34,17 +34,23 @@ void back(int) {
   logic.stepmotor.back();
 }
 
+void forceLight(int) {
+  logic.serial.print("toggling force override of light...%s", CRLF);
+  logic.override_light_sensor = !logic.override_light_sensor;
+}
+
 void setup() {  
   logic.setup();
   logic.serial.print("Museum Birdcage by kevinc...\n");
   Serial.println(getFullVersion("museum-birdcage"));
 
-  logic.serial.registerCommand(SerialCommand("status",  's', &status,    "status",   "gets the status of device"));
-  logic.serial.registerCommand(SerialCommand("solve",   'v', &solve,     "solve",   "force a puzzle solve of the device"));
-  logic.serial.registerCommand(SerialCommand("close",   'c', &closeTray, "close",   "close the device tray"));
-  logic.serial.registerCommand(SerialCommand("forward", 'f', &forward,   "forward", "move the tray forward a small amount"));
-  logic.serial.registerCommand(SerialCommand("back",    'b', &back,      "back",    "move the tray backward a small amount"));
-  logic.serial.registerCommand(SerialCommand("reboot",  'r', &reboot,    "reboot",  "software reboot the device"));
+  logic.serial.registerCommand(SerialCommand("status",  's', &status,     "status",   "gets the status of device"));
+  logic.serial.registerCommand(SerialCommand("solve",   'v', &solve,      "solve",   "force a puzzle solve of the device"));
+  logic.serial.registerCommand(SerialCommand("close",   'c', &closeTray,  "close",   "close the device tray"));
+  logic.serial.registerCommand(SerialCommand("forward", 'f', &forward,    "forward", "move the tray forward a small amount"));
+  logic.serial.registerCommand(SerialCommand("back",    'b', &back,       "back",    "move the tray backward a small amount"));
+  logic.serial.registerCommand(SerialCommand("light",   'l', &forceLight, "light",   "toggle force override light sensor"));
+  logic.serial.registerCommand(SerialCommand("reboot",  'r', &reboot,     "reboot",  "software reboot the device"));
 
   logic.serial.printHelp();
   logic.status();

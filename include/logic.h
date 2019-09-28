@@ -24,6 +24,9 @@ public:
   void solved();
   void status();
 
+  bool override_light_sensor = false;
+  String cur_password;
+
 private:
 
 };

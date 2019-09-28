@@ -14,7 +14,6 @@ unsigned long touch_last_seen[5]  = { 0, 0, 0, 0, 0 };
 bool touch_rising_reported[5]     = { 0, 0, 0, 0, 0 };
 unsigned long touch_first_seen[5] = { 0, 0, 0, 0, 0 };
 unsigned long last_button_press = 0;
-int touch_current_pass_index = 0;
 
 Notes::Notes(Logic &logic)
 : _logic(logic)
@@ -95,7 +94,7 @@ int Notes::checkPassword(int buttonPressed, int d) {
 
     _logic.serial.print("checking final password...\n");
     if (isPasswordCorrect()) {
-      _logic.serial.print("SOLVED!!!\n");
+      _logic.serial.print("CORRECT!!!\n");
       res = 1;
     } else {
       _logic.serial.print("incorrect.\n");

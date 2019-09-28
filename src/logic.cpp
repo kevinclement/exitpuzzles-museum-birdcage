@@ -66,31 +66,30 @@ void Logic::handle() {
   }
 
   // check for light, only enable the device when its dark
-  // if (lightsensor.lightDetected) {
-  //   if (audio.playing) {
-  //     serial.print("Stopping song since its disabled\n");
-  //     audio.stop();
-  //   }
-  //   return;
-  // }
-
-  if (!audio.playing) {
-    if (notes.waitedLongEnough()) {
-      serial.print("playing song...\n");
-      audio.play(audio.TRACK_FULL, true);
+  if (lightsensor.lightDetected && !override_light_sensor) {
+    if (audio.playing) {
+      serial.print("Stopping song since its disabled\n");
+      audio.stop();
     }
   } else {
+    if (!audio.playing) {
+      if (notes.waitedLongEnough()) {
+        serial.print("playing song...\n");
+        audio.play(audio.TRACK_FULL, true);
+      }
+    } else {
 
-    // if totally timed out, restart it
-    if (audio.finished()) {
-      serial.print("done with song, starting again...\n");
-      audio.stop();
-    }
+      // if totally timed out, restart it
+      if (audio.finished()) {
+        serial.print("done with song, starting again...\n");
+        audio.stop();
+      }
 
-    // if there was a button press between our start time, then restart it
-    if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
-      serial.print("restarting song from button press...\n");
-      audio.stop();
+      // if there was a button press between our start time, then restart it
+      if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
+        serial.print("restarting song from button press...\n");
+        audio.stop();
+      }
     }
   }
 
@@ -98,12 +97,23 @@ void Logic::handle() {
   if (buttonPressed != 0) {
     audio.play(buttonPressed, true);
 
+    // reset current pass when we reset the index
+    if (notes.touch_current_pass_index == 0) {
+      cur_password = String();
+    }
+    
+    cur_password.concat(buttonPressed);
+
     int res = notes.checkPassword(buttonPressed, audio.track_lengths_ms[buttonPressed-1]);
-    if (res >= 0) {
-      if (res == 1) {
-        solved();
-      } else {
-        audio.play(audio.TRACK_FAILED, false);
+    
+    // only check the password if bird is in the dark, or we're overriding it
+    if (!lightsensor.lightDetected || override_light_sensor) {
+      if (res >= 0) {
+        if (res == 1) {
+          solved();
+        } else {
+          audio.play(audio.TRACK_FAILED, false);
+        }
       }
     }
 
@@ -125,7 +135,7 @@ void Logic::status() {
       "solved:%s,"
       "lightValue:%d,"
       "trayOpened:%s,"
-      "password:%d%d%d%d%d%d"
+      "password:%s"
 
       "%s"
     , GIT_HASH,
@@ -135,12 +145,7 @@ void Logic::status() {
       solved_at > 0 ? "true" : "false",
       lightsensor.light_value,
       stepmotor.tray_out ? "true" : "false",
-      notes.touch_currently_typed[0],
-      notes.touch_currently_typed[1],
-      notes.touch_currently_typed[2],
-      notes.touch_currently_typed[3],
-      notes.touch_currently_typed[4],
-      notes.touch_currently_typed[5],
+      cur_password.c_str(),
 
       CRLF);
 

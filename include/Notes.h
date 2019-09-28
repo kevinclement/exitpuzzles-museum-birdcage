@@ -16,6 +16,7 @@ class Notes {
     bool buttonPressedDuringSong(unsigned long);
 
     int touch_currently_typed[6] = { 0, 0, 0, 0, 0, 0 };
+    int touch_current_pass_index = 0;
 
   private:
     Logic &_logic;
