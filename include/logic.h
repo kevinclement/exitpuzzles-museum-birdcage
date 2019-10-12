@@ -25,6 +25,8 @@ public:
   void status();
 
   bool override_light_sensor = false;
+  bool override_play = false;
+  bool override_stop = false;
   String cur_password;
 
 private:

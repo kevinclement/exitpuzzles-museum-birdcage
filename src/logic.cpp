@@ -65,33 +65,54 @@ void Logic::handle() {
     return;
   }
 
-  // check for light, only enable the device when its dark
-  if (lightsensor.lightDetected && !override_light_sensor) {
-    if (audio.playing) {
-      serial.print("Stopping song since its disabled\n");
+  if (audio.playing && override_stop) { 
+    serial.print("Stopping song since override is enabled\n");
+    audio.stop();
+  }
+
+  if (override_play) {
+    if (!audio.playing && notes.waitedLongEnough()) {
+        serial.print("Playing audio due to override\n");
+        audio.play(audio.TRACK_FULL, true);
+    } else if (audio.playing && audio.finished()) {
+        serial.print("done with song, starting again...\n");
+        audio.stop(); 
+    } 
+    
+    if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
+      serial.print("restarting song from button press...\n");
       audio.stop();
     }
-  } else {
-    if (!audio.playing) {
-      if (notes.waitedLongEnough()) {
-        serial.print("playing song...\n");
-        audio.play(audio.TRACK_FULL, true);
-      }
-    } else {
-
-      // if totally timed out, restart it
-      if (audio.finished()) {
-        serial.print("done with song, starting again...\n");
-        audio.stop();
-      }
-
-      // if there was a button press between our start time, then restart it
-      if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
-        serial.print("restarting song from button press...\n");
-        audio.stop();
-      }
-    }
   }
+
+
+  // check for light, only enable the device when its dark
+  // if (lightsensor.lightDetected && !override_light_sensor) {
+  //   if (audio.playing) {
+  //     serial.print("Stopping song since its disabled\n");
+  //     audio.stop();
+  //   }
+  // } else {
+  //   if (!audio.playing) {
+  //     if (notes.waitedLongEnough()) {
+  //       serial.print("playing song...\n");
+  //       audio.play(audio.TRACK_FULL, true);
+  //     }
+  //   } else {
+
+  //     // if totally timed out, restart it
+  //     if (audio.finished()) {
+  //       serial.print("done with song, starting again...\n");
+  //       audio.stop();
+  //     }
+
+  //     // if there was a button press between our start time, then restart it
+  //     if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
+  //       serial.print("restarting song from button press...\n");
+  //       audio.stop();
+  //     }
+  //   }
+  // }
 
   int buttonPressed = notes.checkButtons();
   if (buttonPressed != 0) {
