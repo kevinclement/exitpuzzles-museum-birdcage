@@ -12,6 +12,7 @@ class LightSensor {
 
     bool lightDetected = true;
     int light_value = 0;
+    bool debug = false;
 
   private:
     Logic &_logic;

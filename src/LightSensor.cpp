@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "LightSensor.h"
+#include "logic.h"
 
 #define PR_PIN 36
 #define PR_DARK_THRESHOLD 100
@@ -18,5 +19,7 @@ void LightSensor::handle() {
   light_value = analogRead(PR_PIN);
   lightDetected = light_value > PR_DARK_THRESHOLD;
 
-  //_logic.serial.print("light: %d\n", light_value);
+  if (debug) {
+    _logic.serial.print("light: %d\n", light_value);
+  }
 }

@@ -39,6 +39,11 @@ void forceLight(int) {
   logic.override_light_sensor = !logic.override_light_sensor;
 }
 
+void debug(int) {
+  logic.serial.print("toggling debug of light sensor...%s", CRLF);
+  logic.lightsensor.debug = !logic.lightsensor.debug;
+}
+
 void setup() {  
   logic.setup();
   logic.serial.print("Museum Birdcage by kevinc...\n");
@@ -50,6 +55,7 @@ void setup() {
   logic.serial.registerCommand(SerialCommand("forward", 'f', &forward,    "forward", "move the tray forward a small amount"));
   logic.serial.registerCommand(SerialCommand("back",    'b', &back,       "back",    "move the tray backward a small amount"));
   logic.serial.registerCommand(SerialCommand("light",   'l', &forceLight, "light",   "toggle force override light sensor"));
+  logic.serial.registerCommand(SerialCommand("debug",   'x', &debug,      "debug",   "toggle debug of light sensor"));
   logic.serial.registerCommand(SerialCommand("reboot",  'r', &reboot,     "reboot",  "software reboot the device"));
 
   logic.serial.printHelp();
