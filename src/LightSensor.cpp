@@ -3,7 +3,7 @@
 #include "logic.h"
 
 #define PR_PIN 36
-#define PR_DARK_THRESHOLD 100
+#define PR_DARK_THRESHOLD 5
 
 LightSensor::LightSensor(Logic &logic)
 : _logic(logic)
