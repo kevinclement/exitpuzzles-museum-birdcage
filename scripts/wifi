@@ -1,2 +1,0 @@
-#!/bin/sh
-pio run --target upload --environment featheresp32-wifi

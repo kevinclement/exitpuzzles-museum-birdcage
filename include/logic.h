@@ -5,7 +5,6 @@
 #include "Stepper.h"
 #include "Notes.h"
 #include "LightSensor.h"
-#include "WifiUpdate.h"
 
 class Logic {
 public:
@@ -15,7 +14,6 @@ public:
   Stepper stepmotor;
   Notes notes;
   LightSensor lightsensor;
-  WifiUpdate wifi;
 
   void setup();
   void handle();

@@ -14,19 +14,17 @@ Logic::Logic()
     audio(*this),
     stepmotor(*this),
     notes(*this),
-    lightsensor(*this),
-    wifi(*this)
+    lightsensor(*this)
 {
 }
 
 void Logic::setup() {
-  serial.setup("ExitMuseumBirdcage");
+  serial.setup("");
 
   audio.setup();
   lightsensor.setup();
   notes.setup();
   stepmotor.setup();
-  wifi.setup();
 }
 
 void Logic::solved() {
@@ -47,7 +45,6 @@ void Logic::close() {
 
 void Logic::handle() {
   serial.handle();
-  wifi.handle();
   lightsensor.handle();
   notes.handle();
   stepmotor.handle();
