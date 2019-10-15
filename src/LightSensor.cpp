@@ -53,3 +53,8 @@ void LightSensor::handle() {
     _logic.serial.print("light: %d\n", light_value);
   }
 }
+
+bool LightSensor::isLight() {
+  // TODO: do this for real.  right now just use override
+  return override_light_detected;
+}

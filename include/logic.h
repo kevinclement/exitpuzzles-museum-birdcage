@@ -22,12 +22,10 @@ public:
   void solved();
   void status();
 
-  bool override_light_sensor = false;
-  bool override_play = false;
-  bool override_stop = false;
   String cur_password;
 
 private:
 
+  bool _isLight = true;
 };
 
