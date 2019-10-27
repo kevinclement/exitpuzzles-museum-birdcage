@@ -4,8 +4,8 @@
 
 #define PR_PIN 36
 #define PR_DARK_THRESHOLD 5
-#define PR_DARK_BOUNCE 4000
-#define PR_LIGHT_BOUNCE 4000
+#define PR_DARK_BOUNCE 2000
+#define PR_LIGHT_BOUNCE 2000
 
 unsigned long dark_seen = 0;
 unsigned long light_seen = 0;
