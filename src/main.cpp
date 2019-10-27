@@ -45,6 +45,11 @@ void debug(int) {
   logic.lightsensor.debug = !logic.lightsensor.debug;
 }
 
+void debugAvg(int) {
+  logic.serial.print("toggling debug of average light sensor...%s", CRLF);
+  logic.lightsensor.debugAvg = !logic.lightsensor.debugAvg; 
+}
+
 void setup() {
   logic.setup();
   logic.serial.print("Museum Birdcage by kevinc...\n");
@@ -57,6 +62,7 @@ void setup() {
   logic.serial.registerCommand(SerialCommand("back",       'b', &back,             "back",       "move the tray backward a small amount"));
   logic.serial.registerCommand(SerialCommand("darkDetect", 'd', &toggleDarkDetect, "darkDetect", "toggle dark detection logic"));
   logic.serial.registerCommand(SerialCommand("debug",      'x', &debug,            "debug",      "toggle debug of light sensor"));
+  logic.serial.registerCommand(SerialCommand("avg",        'y', &debugAvg,         "avg",        "toggle debug of the average light sensor calc"));
   logic.serial.registerCommand(SerialCommand("reboot",     'r', &reboot,           "reboot",     "software reboot the device"));
 
   logic.serial.printHelp();

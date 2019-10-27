@@ -12,6 +12,7 @@ class LightSensor {
 
     int light_value = 0;
     bool debug = false;
+    bool debugAvg = false;
     bool darkDetectionEnabled = true; // starts out with dark detection logic enabled
 
     bool isLight();

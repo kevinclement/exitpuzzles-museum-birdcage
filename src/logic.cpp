@@ -43,6 +43,8 @@ void Logic::close() {
   status();
 }
 
+
+bool s2 = false;
 void Logic::handle() {
   serial.handle();
   lightsensor.handle();
