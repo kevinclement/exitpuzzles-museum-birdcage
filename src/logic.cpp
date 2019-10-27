@@ -52,27 +52,25 @@ void Logic::handle() {
 
   if (_isLight != lightsensor.isLight()) {
     serial.print("Light change detected\n");
+    if (!s2 && _isLight) {
+      serial.print("@@@@ WILL SOLVE HERE @@@@@ \n");
+      s2 = true;
+    }
     _isLight = !_isLight;
     status();
   }
 
-  // if (SOLVED) {
-  //   if (!stepmotor.tray_out && !SOLVED_TRAY_IN)  {
-  //     audio.play(audio.TRACK_WINNING, false);
-  //     stepmotor.open();
-  //   } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
-  //     close();
-  //   }
+  if (SOLVED) {
+    if (!stepmotor.tray_out && !SOLVED_TRAY_IN)  {
+      audio.play(audio.TRACK_WINNING, false);
+      stepmotor.open();
+    } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
+      close();
+    }
 
-  //   // NOOP the rest if we've solved it
-  //   return;
-  // }
-
-  // if (_isLight != lightsensor.isLight()) {
-  //   serial.print("Light change detected\n");
-  //   _isLight = !_isLight;
-  //   status();
-  // }
+    // NOOP the rest if we've solved it
+    return;
+  }
 
   // // check for light, only play sound when its dark
   // if (_isLight) {
