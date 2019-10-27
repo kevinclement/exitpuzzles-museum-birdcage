@@ -34,9 +34,10 @@ void back(int) {
   logic.stepmotor.back();
 }
 
-void toggleIsLight(int) {
-  logic.serial.print("toggling override of isLight...%s", CRLF);
-  logic.lightsensor.override_light_detected = !logic.lightsensor.override_light_detected;
+void toggleDarkDetect(int) {
+  logic.serial.print("toggling dark detection logic...%s", CRLF);
+  logic.lightsensor.darkDetectionEnabled = !logic.lightsensor.darkDetectionEnabled;
+  logic.status();
 }
 
 void debug(int) {
@@ -49,14 +50,14 @@ void setup() {
   logic.serial.print("Museum Birdcage by kevinc...\n");
   Serial.println(getFullVersion("museum-birdcage"));
 
-  logic.serial.registerCommand(SerialCommand("status",  's', &status,        "status",  "gets the status of device"));
-  logic.serial.registerCommand(SerialCommand("solve",   'v', &solve,         "solve",   "force a puzzle solve of the device"));
-  logic.serial.registerCommand(SerialCommand("close",   'c', &closeTray,     "close",   "close the device tray"));
-  logic.serial.registerCommand(SerialCommand("forward", 'f', &forward,       "forward", "move the tray forward a small amount"));
-  logic.serial.registerCommand(SerialCommand("back",    'b', &back,          "back",    "move the tray backward a small amount"));
-  logic.serial.registerCommand(SerialCommand("light",   'l', &toggleIsLight, "light",   "toggle override of isLight detection"));
-  logic.serial.registerCommand(SerialCommand("debug",   'x', &debug,         "debug",   "toggle debug of light sensor"));
-  logic.serial.registerCommand(SerialCommand("reboot",  'r', &reboot,        "reboot",  "software reboot the device"));
+  logic.serial.registerCommand(SerialCommand("status",     's', &status,           "status",     "gets the status of device"));
+  logic.serial.registerCommand(SerialCommand("solve",      'v', &solve,            "solve",      "force a puzzle solve of the device"));
+  logic.serial.registerCommand(SerialCommand("close",      'c', &closeTray,        "close",      "close the device tray"));
+  logic.serial.registerCommand(SerialCommand("forward",    'f', &forward,          "forward",    "move the tray forward a small amount"));
+  logic.serial.registerCommand(SerialCommand("back",       'b', &back,             "back",       "move the tray backward a small amount"));
+  logic.serial.registerCommand(SerialCommand("darkDetect", 'd', &toggleDarkDetect, "darkDetect", "toggle dark detection logic"));
+  logic.serial.registerCommand(SerialCommand("debug",      'x', &debug,            "debug",      "toggle debug of light sensor"));
+  logic.serial.registerCommand(SerialCommand("reboot",     'r', &reboot,           "reboot",     "software reboot the device"));
 
   logic.serial.printHelp();
   logic.status();

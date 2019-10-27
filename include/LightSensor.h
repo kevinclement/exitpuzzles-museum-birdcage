@@ -12,7 +12,7 @@ class LightSensor {
 
     int light_value = 0;
     bool debug = false;
-    bool override_light_detected = true; // for now, starts off with isLight true, so it doesnt play
+    bool darkDetectionEnabled = true; // starts out with dark detection logic enabled
 
     bool isLight();
 

@@ -50,78 +50,84 @@ void Logic::handle() {
   stepmotor.handle();
   audio.handle();
 
-  if (SOLVED) {
-    if (!stepmotor.tray_out && !SOLVED_TRAY_IN)  {
-      audio.play(audio.TRACK_WINNING, false);
-      stepmotor.open();
-    } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
-      close();
-    }
-
-    // NOOP the rest if we've solved it
-    return;
-  }
-
   if (_isLight != lightsensor.isLight()) {
     serial.print("Light change detected\n");
     _isLight = !_isLight;
     status();
   }
 
-  // check for light, only play sound when its dark
-  if (_isLight) {
-    if (audio.playing) {
-      serial.print("Stopping song since its disabled\n");
-      audio.stop();
-    }
-  } else {
-    if (!audio.playing) {
-      if (notes.waitedLongEnough()) {
-        serial.print("playing song...\n");
-        audio.play(audio.TRACK_FULL, true);
-      }
-    } else {
+  // if (SOLVED) {
+  //   if (!stepmotor.tray_out && !SOLVED_TRAY_IN)  {
+  //     audio.play(audio.TRACK_WINNING, false);
+  //     stepmotor.open();
+  //   } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
+  //     close();
+  //   }
 
-      // if totally timed out, restart it
-      if (audio.finished()) {
-        serial.print("done with song, starting again...\n");
-        audio.stop();
-      }
+  //   // NOOP the rest if we've solved it
+  //   return;
+  // }
 
-      // if there was a button press between our start time, then restart it
-      if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
-        serial.print("restarting song from button press...\n");
-        audio.stop();
-      }
-    }
-  }
+  // if (_isLight != lightsensor.isLight()) {
+  //   serial.print("Light change detected\n");
+  //   _isLight = !_isLight;
+  //   status();
+  // }
 
-  int buttonPressed = notes.checkButtons();
-  if (buttonPressed != 0) {
-    audio.play(buttonPressed, true);
+  // // check for light, only play sound when its dark
+  // if (_isLight) {
+  //   if (audio.playing) {
+  //     serial.print("Stopping song since its disabled\n");
+  //     audio.stop();
+  //   }
+  // } else {
+  //   if (!audio.playing) {
+  //     if (notes.waitedLongEnough()) {
+  //       serial.print("playing song...\n");
+  //       audio.play(audio.TRACK_FULL, true);
+  //     }
+  //   } else {
 
-    // reset current pass when we reset the index
-    if (notes.touch_current_pass_index == 0) {
-      cur_password = String();
-    }
+  //     // if totally timed out, restart it
+  //     if (audio.finished()) {
+  //       serial.print("done with song, starting again...\n");
+  //       audio.stop();
+  //     }
+
+  //     // if there was a button press between our start time, then restart it
+  //     if (notes.buttonPressedDuringSong(audio.playing_song_at)) {
+  //       serial.print("restarting song from button press...\n");
+  //       audio.stop();
+  //     }
+  //   }
+  // }
+
+  // int buttonPressed = notes.checkButtons();
+  // if (buttonPressed != 0) {
+  //   audio.play(buttonPressed, true);
+
+  //   // reset current pass when we reset the index
+  //   if (notes.touch_current_pass_index == 0) {
+  //     cur_password = String();
+  //   }
     
-    cur_password.concat(buttonPressed);
+  //   cur_password.concat(buttonPressed);
 
-    int res = notes.checkPassword(buttonPressed, audio.track_lengths_ms[buttonPressed-1]);
+  //   int res = notes.checkPassword(buttonPressed, audio.track_lengths_ms[buttonPressed-1]);
     
-    // only check the password if bird is in the dark
-    if (!_isLight) {
-      if (res >= 0) {
-        if (res == 1) {
-          solved();
-        } else {
-          audio.play(audio.TRACK_FAILED, false);
-        }
-      }
-    }
+  //   // only check the password if bird is in the dark
+  //   if (!_isLight) {
+  //     if (res >= 0) {
+  //       if (res == 1) {
+  //         solved();
+  //       } else {
+  //         audio.play(audio.TRACK_FAILED, false);
+  //       }
+  //     }
+  //   }
 
-    status();
-  }
+  //   status();
+  // }
 
   delay(100);
 }
@@ -138,6 +144,7 @@ void Logic::status() {
       "solved:%s,"
       "lightValue:%d,"
       "isLight:%s,"
+      "darkDetection:%s,"
       "trayOpened:%s,"
       "password:%s"
 
@@ -149,6 +156,7 @@ void Logic::status() {
       solved_at > 0 ? "true" : "false",
       lightsensor.light_value,
       _isLight ? "true" : "false",
+      lightsensor.darkDetectionEnabled ? "true" : "false",
       stepmotor.tray_out ? "true" : "false",
       cur_password.c_str(),
 
