@@ -4,8 +4,8 @@
 
 #define PR_PIN 36
 #define PR_DARK_THRESHOLD 5
-#define PR_DARK_BOUNCE 500
-#define PR_LIGHT_BOUNCE 500
+#define PR_DARK_BOUNCE 4000
+#define PR_LIGHT_BOUNCE 4000
 
 unsigned long dark_seen = 0;
 unsigned long light_seen = 0;
@@ -25,30 +25,30 @@ void LightSensor::handle() {
   isDark = light_value <= PR_DARK_THRESHOLD;
 
   // check for light
-  // if (!isDark && light_seen == 0) {
-  //   light_seen = millis();
-  // } else if (!isDark &&  millis() - light_seen > PR_LIGHT_BOUNCE) {
-  //   if (!lightDetected) {
-  //     _logic.serial.print("detected light long enough.\n");
-  //   }
+  if (!isDark && light_seen == 0) {
+    light_seen = millis();
+  } else if (!isDark &&  millis() - light_seen > PR_LIGHT_BOUNCE) {
+    if (!lightDetected) {
+      _logic.serial.print("detected light long enough.\n");
+    }
     
-  //   lightDetected = true;
-  // } else if (isDark) {
-  //   light_seen = 0;
-  // }
+    lightDetected = true;
+  } else if (isDark) {
+    light_seen = 0;
+  }
 
-  // // check for dark
-  // if (isDark && dark_seen == 0) {
-  //   dark_seen = millis();
-  // } else if (isDark && millis() - dark_seen > PR_DARK_BOUNCE) {
-  //   if (lightDetected) {
-  //     _logic.serial.print("detected dark long enough.\n");
-  //   }
+  // check for dark
+  if (isDark && dark_seen == 0) {
+    dark_seen = millis();
+  } else if (isDark && millis() - dark_seen > PR_DARK_BOUNCE) {
+    if (lightDetected) {
+      _logic.serial.print("detected dark long enough.\n");
+    }
 
-  //   lightDetected = false;
-  // } else if (!isDark) {
-  //   dark_seen = 0;
-  // }
+    lightDetected = false;
+  } else if (!isDark) {
+    dark_seen = 0;
+  }
 
   if (debug) {
     _logic.serial.print("light: %d\n", light_value);
@@ -56,5 +56,5 @@ void LightSensor::handle() {
 }
 
 bool LightSensor::isLight() {
-  return !isDark || !darkDetectionEnabled;
+  return lightDetected || !darkDetectionEnabled;
 }
