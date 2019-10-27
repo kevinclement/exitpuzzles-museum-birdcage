@@ -32,19 +32,14 @@ void Logic::solved() {
 
   SOLVED = true;
   solved_at = millis();
-
-  status();
 }
 
 void Logic::close() {
   serial.print("Resetting tray...\n");
   stepmotor.close();
   SOLVED_TRAY_IN = true;
-  status();
 }
 
-
-bool s2 = false;
 void Logic::handle() {
   serial.handle();
   lightsensor.handle();
@@ -54,12 +49,13 @@ void Logic::handle() {
 
   if (_isLight != lightsensor.isLight()) {
     serial.print("Light change detected\n");
-    if (!s2 && _isLight) {
-      serial.print("@@@@ WILL SOLVE HERE @@@@@ \n");
-      s2 = true;
-    }
     _isLight = !_isLight;
-    status();
+    
+    if (!SOLVED && !_isLight) {
+      solved();
+    } else {
+      status();
+    }
   }
 
   if (SOLVED) {
