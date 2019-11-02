@@ -3,7 +3,7 @@
 #include "logic.h"
 
 #define PR_PIN 36
-#define PR_DARK_THRESHOLD 100
+#define PR_DARK_THRESHOLD 10
 
 enum STATE {
   UNKNOWN,
@@ -37,7 +37,7 @@ void LightSensor::handle() {
   }
 
   // check values every 1s
-  if (millis() - timer >= 1000) {
+  if (millis() - timer >= 4000) {
     double avg = avg_total / total_measures;
 
     if (debugAvg) {
