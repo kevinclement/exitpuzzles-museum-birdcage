@@ -40,6 +40,18 @@ void toggleDarkDetect(int) {
   logic.status();
 }
 
+void darkOff(int) {
+  logic.serial.print("turning dark detection off...%s", CRLF);
+  logic.lightsensor.darkDetectionEnabled = false;
+  logic.status();
+}
+
+void darkOn(int) {
+  logic.serial.print("turning dark detection on...%s", CRLF);
+  logic.lightsensor.darkDetectionEnabled = true;
+  logic.status();
+}
+
 void debug(int) {
   logic.serial.print("toggling debug of light sensor...%s", CRLF);
   logic.lightsensor.debug = !logic.lightsensor.debug;
@@ -61,6 +73,8 @@ void setup() {
   logic.serial.registerCommand(SerialCommand("forward",    'f', &forward,          "forward",    "move the tray forward a small amount"));
   logic.serial.registerCommand(SerialCommand("back",       'b', &back,             "back",       "move the tray backward a small amount"));
   logic.serial.registerCommand(SerialCommand("darkDetect", 'd', &toggleDarkDetect, "darkDetect", "toggle dark detection logic"));
+  logic.serial.registerCommand(SerialCommand("darkOff",    'm', &darkOff,          "darkOff",    "turn dark detection off"));
+  logic.serial.registerCommand(SerialCommand("darkOn",     'n', &darkOn,           "darkOn",     "turn dark detection on"));
   logic.serial.registerCommand(SerialCommand("debug",      'x', &debug,            "debug",      "toggle debug of light sensor"));
   logic.serial.registerCommand(SerialCommand("avg",        'y', &debugAvg,         "avg",        "toggle debug of the average light sensor calc"));
   logic.serial.registerCommand(SerialCommand("reboot",     'r', &reboot,           "reboot",     "software reboot the device"));
