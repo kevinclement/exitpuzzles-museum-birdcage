@@ -64,7 +64,7 @@ void Logic::handle() {
       if (solved_audio_at == 0) {
         audio.play(audio.TRACK_WINNING, false);
         solved_audio_at = millis();
-      } else if (millis() - solved_audio_at > 6500) {
+      } else if (millis() - solved_audio_at > 1) {
         // TODO: tweek time 6.238
         stepmotor.open();
       }      

@@ -62,15 +62,11 @@ void debugAvg(int) {
   logic.lightsensor.debugAvg = !logic.lightsensor.debugAvg; 
 }
 
-void playNextAudio(int) {
-  logic.serial.print("playing wining audio...%s", CRLF);
-  logic.audio.next();
-}
-
 void playAudio(int) {
   logic.serial.print("playing winning audio...%s", CRLF);
   logic.audio.play(9, false);
 }
+
 void playNextAudio(int) {
   logic.serial.print("playing next audio...%s", CRLF);
   logic.audio.next();
