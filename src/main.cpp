@@ -62,6 +62,24 @@ void debugAvg(int) {
   logic.lightsensor.debugAvg = !logic.lightsensor.debugAvg; 
 }
 
+void playNextAudio(int) {
+  logic.serial.print("playing wining audio...%s", CRLF);
+  logic.audio.next();
+}
+
+void playAudio(int) {
+  logic.serial.print("playing winning audio...%s", CRLF);
+  logic.audio.play(9, false);
+}
+void playNextAudio(int) {
+  logic.serial.print("playing next audio...%s", CRLF);
+  logic.audio.next();
+}
+
+void playPreviousAudio(int) {
+  logic.audio.previous();
+}
+
 void setup() {
   logic.setup();
   logic.serial.print("Museum Birdcage by kevinc...\n");
@@ -77,6 +95,9 @@ void setup() {
   logic.serial.registerCommand(SerialCommand("darkOn",     'n', &darkOn,           "darkOn",     "turn dark detection on"));
   logic.serial.registerCommand(SerialCommand("debug",      'x', &debug,            "debug",      "toggle debug of light sensor"));
   logic.serial.registerCommand(SerialCommand("avg",        'y', &debugAvg,         "avg",        "toggle debug of the average light sensor calc"));
+  logic.serial.registerCommand(SerialCommand("audio",      'a', &playAudio,        "audio",      "play the winning audio sound"));
+  logic.serial.registerCommand(SerialCommand("next",       'z', &playNextAudio,    "next",       "play the next audio"));
+  logic.serial.registerCommand(SerialCommand("previous",   'p', &playPreviousAudio,"prevous",   "play the previous audio"));
   logic.serial.registerCommand(SerialCommand("reboot",     'r', &reboot,           "reboot",     "software reboot the device"));
 
   logic.serial.printHelp();

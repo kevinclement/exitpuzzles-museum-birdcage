@@ -7,6 +7,7 @@
 
 bool SOLVED = false;
 bool SOLVED_TRAY_IN = false;
+unsigned long solved_audio_at = 0;
 unsigned long solved_at = 0;
 
 Logic::Logic() 
@@ -60,8 +61,13 @@ void Logic::handle() {
 
   if (SOLVED) {
     if (!stepmotor.tray_out && !SOLVED_TRAY_IN)  {
-      audio.play(audio.TRACK_WINNING, false);
-      stepmotor.open();
+      if (solved_audio_at == 0) {
+        audio.play(audio.TRACK_WINNING, false);
+        solved_audio_at = millis();
+      } else if (millis() - solved_audio_at > 6500) {
+        // TODO: tweek time 6.238
+        stepmotor.open();
+      }      
     } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
       close();
     }

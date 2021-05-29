@@ -11,6 +11,8 @@ class AudioPlayer {
     void handle();
 
     void play(int8_t track, bool loud);
+    void previous();
+    void next();
     void stop();
     bool finished();
 

@@ -60,6 +60,50 @@ void AudioPlayer::play(int8_t track, bool loud)
   }
 }
 
+void AudioPlayer::previous()
+{
+  playing = true;
+
+  // loud=60%, soft=22%
+  // sendCommand(06, loud ? 0x3C : 0x16);
+  
+  delay(20);
+  Send_buf[0] = 0x7e; //starting byte
+  Send_buf[1] = 0xff; //version
+  Send_buf[2] = 0x06; //the number of bytes of the command without starting byte and ending byte
+  Send_buf[3] = 0x02; //
+  Send_buf[4] = 0x00;//0x00 = no feedback, 0x01 = feedback
+  Send_buf[5] = 0x00;
+  Send_buf[6] = 0x00; 
+  Send_buf[7] = 0xef; //ending byte
+  for(uint8_t i=0; i<8; i++)//
+  {
+    Serial1.write(Send_buf[i]);
+  }
+}
+
+void AudioPlayer::next()
+{
+  playing = true;
+
+  // loud=60%, soft=22%
+  // sendCommand(06, loud ? 0x3C : 0x16);
+  
+  delay(20);
+  Send_buf[0] = 0x7e; //starting byte
+  Send_buf[1] = 0xff; //version
+  Send_buf[2] = 0x06; //the number of bytes of the command without starting byte and ending byte
+  Send_buf[3] = 0x01; //
+  Send_buf[4] = 0x00;//0x00 = no feedback, 0x01 = feedback
+  Send_buf[5] = 0x00;
+  Send_buf[6] = 0x00; 
+  Send_buf[7] = 0xef; //ending byte
+  for(uint8_t i=0; i<8; i++)//
+  {
+    Serial1.write(Send_buf[i]);
+  }
+}
+
 void AudioPlayer::stop() {
   sendCommand(0x16,0x00);
   playing = false;
