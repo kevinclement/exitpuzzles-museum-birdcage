@@ -114,5 +114,93 @@ bool AudioPlayer::finished() {
   return millis() - playing_song_at > 25000;
 }
 
+static uint8_t ansbuf[10] = {0}; // Buffer for the answers.    // BETTER LOCALLY
+
+String sbyte2hex(uint8_t b)
+{
+  String shex;
+
+  shex = "0X";
+
+  if (b < 16) shex += "0";
+  shex += String(b, HEX);
+  shex += " ";
+  return shex;
+}
+
+String sanswer(void)
+{
+  uint8_t i = 0;
+  String answer = "";
+
+  // Get only 10 Bytes
+  while (Serial1.available() && (i < 10))
+  {
+    uint8_t b = Serial1.read();
+    ansbuf[i] = b;
+    i++;
+
+    answer += sbyte2hex(b);
+  }
+
+  // if the answer format is correct.
+  if ((ansbuf[0] == 0x7E) && (ansbuf[9] == 0xEF))
+  {
+    return answer;
+  }
+
+  return "???: " + answer;
+}
+
+String AudioPlayer::decodeOutput() {
+  String decodedOutput = "";
+
+  decodedOutput += sanswer();
+
+  switch (ansbuf[3]) {
+    case 0x3A:
+      decodedOutput += " -> Memory card inserted.";
+      break;
+
+    case 0x3D:
+      decodedOutput += " -> Completed play num " + String(ansbuf[6], DEC);
+      break;
+
+    case 0x40:
+      decodedOutput += " -> Error";
+      break;
+
+    case 0x41:
+      decodedOutput += " -> Data recived correctly. ";
+      break;
+
+    case 0x42:
+      decodedOutput += " -> Status playing: " + String(ansbuf[6], DEC);
+      break;
+
+    case 0x48:
+      decodedOutput += " -> File count: " + String(ansbuf[6], DEC);
+      break;
+
+    case 0x4C:
+      decodedOutput += " -> Playing: " + String(ansbuf[6], DEC);
+      break;
+
+    case 0x4E:
+      decodedOutput += " -> Folder file count: " + String(ansbuf[6], DEC);
+      break;
+
+    case 0x4F:
+      decodedOutput += " -> Folder count: " + String(ansbuf[6], DEC);
+      break;
+  }
+
+  return decodedOutput;
+}
+
 void AudioPlayer::handle() {
+  if (Serial1.available())
+  {
+    Serial.println(decodeOutput());
+  }
 }

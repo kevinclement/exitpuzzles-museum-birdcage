@@ -26,5 +26,6 @@ class AudioPlayer {
 
   private:
     Logic &_logic;
+    String decodeOutput();
 
 };

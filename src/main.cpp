@@ -64,7 +64,7 @@ void debugAvg(int) {
 
 void playAudio(int) {
   logic.serial.print("playing winning audio...%s", CRLF);
-  logic.audio.play(9, false);
+  logic.audio.play(8, false);
 }
 
 void playNextAudio(int) {
