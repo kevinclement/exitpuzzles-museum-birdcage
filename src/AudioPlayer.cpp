@@ -18,6 +18,14 @@ void AudioPlayer::setup() {
   delay(500);//Wait chip initialization is complete
   sendCommand(CMD_SEL_DEV, DEV_TF);//select the TF card
   delay(200);
+
+  // CMD_QUERY_FLDR_COUNT
+  sendCommand(0x4f, 0);
+  delay(500);
+
+  // CMD_QUERY_TOT_TRACKS
+  sendCommand(0x48, 0);
+  delay(500);
 }
 
 void sendCommand(int8_t command, int16_t dat)
