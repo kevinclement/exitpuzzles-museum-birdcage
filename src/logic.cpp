@@ -66,7 +66,7 @@ void Logic::handle() {
       delay(2000);
       audio.play(1, true); 
       delay(1000);
-      audio.play(8, false); 
+      audio.play(audio.TRACK_WINNING, false);
       stepmotor.open();
     } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
       close();
