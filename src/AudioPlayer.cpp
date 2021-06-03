@@ -207,8 +207,8 @@ String AudioPlayer::decodeOutput() {
 }
 
 void AudioPlayer::handle() {
-  if (Serial1.available())
-  {
-    Serial.println(decodeOutput());
-  }
+  // if (Serial1.available())
+  // {
+  //   Serial.println(decodeOutput());
+  // }
 }

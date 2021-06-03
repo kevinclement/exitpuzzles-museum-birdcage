@@ -60,14 +60,13 @@ void Logic::handle() {
 
   if (SOLVED) {
     if (!stepmotor.tray_out && !SOLVED_TRAY_IN)  {
-      logic.audio.play(5, false); 
+      audio.play(5, true); 
       delay(3800);
-      logic.audio.play(3, false); 
+      audio.play(3, true); 
       delay(2000);
-      logic.audio.play(1, false); 
+      audio.play(1, true); 
       delay(1000);
-      logic.audio.play(8, false); 
-      delay(4200);
+      audio.play(8, false); 
       stepmotor.open();
     } else if (!SOLVED_TRAY_IN && millis() - solved_at > RESET_TIME) {
       close();
